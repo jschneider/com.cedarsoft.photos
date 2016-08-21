@@ -55,9 +55,8 @@ public class ExifToolTest {
     File file = tmp.newFile("ExifToolTest_testClearRotation.jpg");
 
     try (FileOutputStream fos = new FileOutputStream(file)) {
-      IOUtils.copy(getClass().getResourceAsStream("/img_2483.jpg"), fos);
+      IOUtils.copy(getClass().getResourceAsStream("/img1.jpg"), fos);
     }
-
 
     {
       OutputStream out = new ByteArrayOutputStream();
