@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.cedarsoft</groupId>
     <artifactId>open</artifactId>
-    <version>71</version>
+    <version>75.2.0</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -63,6 +63,10 @@
     <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.cedarsoft</groupId>
+      <artifactId>annotations</artifactId>
     </dependency>
 
     <!-- Test dependencies -->
