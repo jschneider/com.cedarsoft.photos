@@ -161,7 +161,10 @@ public class ExifInfo {
     Object value = findEntry("FileNumber").getValueNonNull();
 
     Iterator<String> parts = Splitter.on("-").split(String.valueOf(value)).iterator();
-    return (Integer.parseInt(parts.next()) - 100) * 10000 + Integer.parseInt(parts.next());
+    String firstPart = parts.next();
+    String secondPart = parts.next();
+
+    return ((Integer.parseInt(firstPart) - 100) * 10000) + Integer.parseInt(secondPart);
   }
 
   @Nonnull
