@@ -28,7 +28,6 @@
 
 package com.cedarsoft.photos.exif;
 
-import org.assertj.core.api.Assertions;
 import org.junit.*;
 
 import java.io.IOException;
@@ -36,7 +35,6 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
@@ -44,65 +42,65 @@ import static org.junit.Assert.*;
 /**
  *
  */
-public class ExifInfoTest {
+public class ExifInfo2Test {
   private ExifInfo exifInfo;
 
   @Before
   public void setUp() throws Exception {
-    InputStream in = getClass().getResourceAsStream("/exif-detailed.txt");
+    InputStream in = getClass().getResourceAsStream("/exif-detailed2.txt");
     assertNotNull(in);
     exifInfo = new ExifInfo(in);
   }
 
   @Test
   public void testAperture() {
-    assertEquals(2.8, exifInfo.getAperture(), 0);
+    assertEquals(8.0, exifInfo.getAperture(), 0);
   }
 
   @Test
   public void testDate() throws IOException {
     ZonedDateTime captureTime = exifInfo.getCaptureTime(ZoneId.systemDefault());
-    assertThat(captureTime).isEqualTo(ZonedDateTime.of(2009, 10, 24, 14, 01, 46, 0, ZoneId.of("Europe/Berlin")));
+    assertThat(captureTime).isEqualTo(ZonedDateTime.of(2016, 8, 16, 18, 28, 8, 0, ZoneId.of("Europe/Berlin")));
   }
 
   @Test
   public void testExposure() throws ParseException {
-    assertEquals(0.00125, exifInfo.getExposureTime(), 0);
-    assertEquals("1/800", exifInfo.getExposureTimeFraction());
+    assertEquals(0.008, exifInfo.getExposureTime(), 0);
+    assertEquals("1/125", exifInfo.getExposureTimeFraction());
   }
 
   @Test
   public void testImNu() {
-    assertEquals(2483, exifInfo.getFileNumber());
+    assertEquals(9138, exifInfo.getFileNumber());
   }
 
   @Test
   public void testCrop() {
-    assertEquals(1.6, exifInfo.getCropFactor(), 0);
+    assertEquals(1.0, exifInfo.getCropFactor(), 0);
   }
 
   @Test
   public void testIso() {
-    assertEquals(125, exifInfo.getIso());
+    assertEquals(100, exifInfo.getIso());
   }
 
   @Test
   public void testLens() {
-    assertEquals("Canon EF 70-200mm f/2.8L IS", exifInfo.getLensType());
+    assertEquals("Canon EF 70-200mm f/4L", exifInfo.getLensType());
     assertEquals(70, exifInfo.getMinFocalLength());
     assertEquals(200, exifInfo.getMaxFocalLength());
-    assertEquals(70, exifInfo.getFocalLength());
+    assertEquals(145, exifInfo.getFocalLength());
     assertEquals(32.0, exifInfo.getMinAperture(), 0);
-    assertEquals(2.8, exifInfo.getMaxAperture(), 0);
+    assertEquals(4.0, exifInfo.getMaxAperture(), 0);
   }
 
   @Test
   public void testCamera() {
-    assertEquals(230101649, exifInfo.getCameraSerial());
-    assertEquals("S0027533", exifInfo.getInternalSerial());
-    assertEquals("Canon EOS 7D", exifInfo.getModel());
+    assertEquals(73024007633L, exifInfo.getCameraSerial());
+    assertEquals("", exifInfo.getInternalSerial());
+    assertEquals("Canon EOS 5D Mark III", exifInfo.getModel());
     assertEquals("Canon", exifInfo.getMake());
 
-    assertThat(exifInfo.getCameraInfo()).isEqualTo(new CameraInfo(230101649, "Canon", "Canon EOS 7D", "S0027533"));
+    assertThat(exifInfo.getCameraInfo()).isEqualTo(new CameraInfo(73024007633L, "Canon", "Canon EOS 5D Mark III", ""));
   }
 }

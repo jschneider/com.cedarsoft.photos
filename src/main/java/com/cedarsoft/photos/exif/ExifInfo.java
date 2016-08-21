@@ -102,13 +102,13 @@ public class ExifInfo {
    * Returns the capture time.
    * It is necessary to add a time zone since that is not stored within the exif data
    *
-   * @param zoneId the date time zone that is used to calculate the date.
+   * @param zoneId the date time zone that is used to calculate the date. Only used if there is no time zone setting in the EXIF
    * @return the capture time
    */
   @Nonnull
   public ZonedDateTime getCaptureTime(@Nonnull ZoneId zoneId) throws NotFoundException {
-    Object value = findEntry("CreateDate").getValue();
-    if (value == null) {
+    Object createDateValue = findEntry("CreateDate").getValue();
+    if (createDateValue == null) {
       throw new IllegalArgumentException("No CreateDate found");
     }
 
@@ -126,7 +126,16 @@ public class ExifInfo {
       .appendValue(ChronoField.SECOND_OF_MINUTE)
       .toFormatter();
 
-    TemporalAccessor temporalAccessor = timeFormatter.withZone(zoneId).parse(String.valueOf(value));
+
+    ZoneId relevantZone;
+    try {
+      Object timeZoneValue = findEntry("TimeZone").getValue();
+      relevantZone = ZoneId.of(String.valueOf(timeZoneValue));
+    } catch (NotFoundException ignore) {
+      relevantZone = zoneId;
+    }
+
+    TemporalAccessor temporalAccessor = timeFormatter.withZone(relevantZone).parse(String.valueOf(createDateValue));
     return ZonedDateTime.from(temporalAccessor);
   }
 
@@ -242,12 +251,12 @@ public class ExifInfo {
   @Nonnull
 
   public String getExposureTimeFraction() throws NotFoundException {
-    return String.valueOf(findEntry("ShutterSpeedValue").getValueNonNull());
+    return String.valueOf(findEntry("ExposureTime").getValueNonNull());
   }
 
   public double getExposureTime() throws ParseException, NotFoundException {
-    //    String exposureTime = String.valueOf( findEntry( "ExposureTime" ).getValueNonNull() );
-    String exposureTime = String.valueOf(findEntry("ShutterSpeedValue").getValueNonNull());
+    String exposureTime = String.valueOf(findEntry("ExposureTime").getValueNonNull());
+    //String exposureTime = String.valueOf(findEntry("ShutterSpeedValue").getValueNonNull());
 
     String[] parts = PATTERN.split(exposureTime);
     if (parts.length != 2) {
