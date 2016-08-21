@@ -14,7 +14,7 @@ public class SplitHashTest {
   @Test
   public void basic() throws Exception {
     Hash hash = HashCalculator.calculate(Algorithm.SHA1, "thecontent");
-    ImageStorage.SplitHash splitHash = ImageStorage.SplitHash.split(hash);
+    SplitHash splitHash = SplitHash.split(hash);
 
     assertThat(hash.getValueAsHex()).isEqualTo("d958566e96bc10f33f4209fbc2ed05f9096ef9a0");
     assertThat(splitHash.getFirstPart()).isEqualTo("d9");
