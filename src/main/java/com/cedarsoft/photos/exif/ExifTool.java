@@ -44,6 +44,7 @@ import java.util.List;
 /**
  * Wrapper for exiftool
  */
+//TODO add SequenceNumber
 public class ExifTool {
   @Nonnull
   private final File bin;
