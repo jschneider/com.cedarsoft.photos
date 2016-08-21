@@ -34,7 +34,11 @@ import org.junit.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Locale;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 /**
@@ -57,7 +61,8 @@ public class ExifInfoTest {
 
   @Test
   public void testDate() throws IOException {
-    //assertEquals( "16.05.09 19:20", exifInfo.getCaptureTime( DateTimeZone.getDefault() ).toString( DateTimeFormat.shortDateTime().withLocale( Locale.GERMANY ) ) );
+    ZonedDateTime captureTime = exifInfo.getCaptureTime(ZoneId.systemDefault());
+    assertThat(captureTime).isEqualTo(ZonedDateTime.of(2009, 10, 24, 14, 01, 46, 0, ZoneId.of("Europe/Berlin")));
   }
 
   @Test
@@ -98,6 +103,6 @@ public class ExifInfoTest {
     assertEquals("Canon EOS 7D", exifInfo.getModel());
     assertEquals("Canon", exifInfo.getMake());
 
-    Assertions.assertThat(exifInfo.getCameraInfo()).isEqualTo(new CameraInfo(230101649, "Canon", "Canon EOS 7D", "S0027533"));
+    assertThat(exifInfo.getCameraInfo()).isEqualTo(new CameraInfo(230101649, "Canon", "Canon EOS 7D", "S0027533"));
   }
 }

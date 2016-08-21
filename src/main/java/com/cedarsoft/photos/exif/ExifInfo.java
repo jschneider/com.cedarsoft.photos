@@ -41,6 +41,10 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAccessor;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -108,18 +112,22 @@ public class ExifInfo {
       throw new IllegalArgumentException("No CreateDate found");
     }
 
-    throw new UnsupportedOperationException();
+    DateTimeFormatter timeFormatter = new DateTimeFormatterBuilder()
+      .appendValue(ChronoField.YEAR)
+      .appendLiteral(':')
+      .appendValue(ChronoField.MONTH_OF_YEAR)
+      .appendLiteral(':')
+      .appendValue(ChronoField.DAY_OF_MONTH)
+      .appendLiteral(' ')
+      .appendValue(ChronoField.HOUR_OF_DAY)
+      .appendLiteral(':')
+      .appendValue(ChronoField.MINUTE_OF_HOUR)
+      .appendLiteral(':')
+      .appendValue(ChronoField.SECOND_OF_MINUTE)
+      .toFormatter();
 
-    //DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
-    //builder.appendYear( 4, 4 ).appendLiteral( ':' ).
-    //  appendMonthOfYear( 2 ).appendLiteral( ':' ).
-    //  appendDayOfMonth( 2 ).appendLiteral( " " ).
-    //  appendHourOfDay( 2 ).appendLiteral( ':' ).
-    //  appendMinuteOfHour( 2 ).appendLiteral( ':' ).
-    //  appendSecondOfMinute( 2 );
-    //
-    //DateTimeFormatter formatter = builder.toFormatter().withZone( DateTimeZone.UTC );
-    //return formatter.parseDateTime( String.valueOf( value ) ).withZone( zoneId );
+    TemporalAccessor temporalAccessor = timeFormatter.withZone(zoneId).parse(String.valueOf(value));
+    return ZonedDateTime.from(temporalAccessor);
   }
 
   @Nonnull
