@@ -71,9 +71,35 @@ public class LinkByDateCreator {
     }
     ensureDirExists(targetDirWithExtension);
 
-    File targetFile = new File(targetDirWithExtension, targetFileName);
-    LinkUtils.createSymbolicLink(sourceFile, targetFile);
-    return targetFile;
+    int suffixCounter = 0;
+    while (true) {
+      try {
+        File targetFile = new File(targetDirWithExtension, addSuffix(targetFileName, suffixCounter));
+        LinkUtils.createSymbolicLink(sourceFile, targetFile);
+        return targetFile;
+      } catch (LinkUtils.AlreadyExistsWithOtherTargetException e) {
+        //Something went wrong
+        suffixCounter++;
+      }
+    }
+  }
+
+  @Nonnull
+  static String addSuffix(@Nonnull String targetFileName, int suffixCounter) {
+    if (suffixCounter == 0) {
+      //Do not add a "0"
+      return targetFileName;
+    }
+
+    int lastIndex = targetFileName.lastIndexOf('.');
+    if (lastIndex < 0) {
+      return targetFileName + "_" + suffixCounter;
+    }
+
+    String firstPart = targetFileName.substring(0, lastIndex);
+    String lastPart = targetFileName.substring(lastIndex);
+
+    return firstPart + "_" + suffixCounter + lastPart;
   }
 
   //TODO move
