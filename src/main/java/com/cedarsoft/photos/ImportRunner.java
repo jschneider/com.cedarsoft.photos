@@ -15,8 +15,10 @@ public class ImportRunner {
   public static void main(String[] args) throws IOException {
     Injector injector = Guice.createInjector(Modules.getModules());
 
+    LinkByDateCreator linkByDateCreator = injector.getInstance(LinkByDateCreator.class);
+
     Importer importer = injector.getInstance(Importer.class);
-    importer.importDirectory(new File("/media/mule/data/media/photos/import/collustra/to-import/2016-08-18"), new Importer.Listener() {
+    importer.importDirectory(new File("/media/mule/data/media/photos/import/collustra/to-import/2016-08-08"), new Importer.Listener() {
       @Override
       public void skipped(@Nonnull File fileToImport, @Nonnull File targetFile) {
         System.out.println("Skipped " + fileToImport);
@@ -25,6 +27,11 @@ public class ImportRunner {
       @Override
       public void imported(@Nonnull File fileToImport, @Nonnull File targetFile) {
         System.out.println("Imported " + fileToImport + " --> " + targetFile.getParentFile().getParentFile().getName() + "/" + targetFile.getParentFile().getName());
+        try {
+          linkByDateCreator.createLink(targetFile);
+        } catch (IOException e) {
+          throw new RuntimeException(e);
+        }
       }
     });
   }
