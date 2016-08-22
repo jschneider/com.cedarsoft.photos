@@ -46,7 +46,7 @@ public class Importer {
     LOG.fine("Importing <" + fileToImport + ">");
     Hash hash = HashCalculator.calculate(ALGORITHM, fileToImport);
 
-    File targetFile = imageStorage.getFile(hash);
+    File targetFile = imageStorage.getDataFile(hash);
     if (targetFile.exists()) {
       LOG.fine("skipping file, already exists");
       return;

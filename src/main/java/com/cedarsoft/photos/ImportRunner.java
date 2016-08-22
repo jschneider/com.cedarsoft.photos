@@ -15,6 +15,6 @@ public class ImportRunner {
     Injector injector = Guice.createInjector(Modules.getModules());
 
     Importer importer = injector.getInstance(Importer.class);
-    importer.importDirectory(new File("/media/mule/data/media/photos/collustra/to-import/2016-08-18"));
+    importer.importDirectory(new File("/media/mule/data/media/photos/import/collustra/to-import/2016-08-18"));
   }
 }

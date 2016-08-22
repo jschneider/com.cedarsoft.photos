@@ -12,6 +12,8 @@ import java.io.IOException;
  */
 public class ImageStorage {
   @Nonnull
+  public static final String DATA_FILE_NAME = "data";
+  @Nonnull
   private final File baseDir;
 
   public ImageStorage(@Nonnull File baseDir) {
@@ -22,25 +24,33 @@ public class ImageStorage {
     }
   }
 
+  @Nonnull
+  @NonUiThread
+  File getDataFile(@Nonnull Hash hash) throws IOException {
+    File dir = getDir(SplitHash.split(hash));
+    return new File(dir, DATA_FILE_NAME);
+  }
+
   /**
-   * Returns the file for the given hash
+   * Returns the dir for the given hash
    */
   @Nonnull
   @NonUiThread
-  File getFile(@Nonnull Hash hash) throws IOException {
-    return getFile(SplitHash.split(hash));
+  File getDir(@Nonnull Hash hash) throws IOException {
+    return getDir(SplitHash.split(hash));
   }
 
   @NonUiThread
   @Nonnull
-  private File getFile(@Nonnull SplitHash splitHash) throws IOException {
-    File dir = getDir(splitHash.getFirstPart());
+  private File getDir(@Nonnull SplitHash splitHash) throws IOException {
+    File firstPartDir = getDir(splitHash.getFirstPart());
+    File dir = new File(firstPartDir, splitHash.getLeftover());
     if (!dir.isDirectory()) {
-      if (!dir.mkdir()) {
+      if (!dir.mkdirs()) {
         throw new IOException("Could not create directory <" + dir.getAbsolutePath() + ">");
       }
     }
-    return new File(dir, splitHash.getLeftover());
+    return dir;
   }
 
   /**
