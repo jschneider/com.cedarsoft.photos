@@ -44,6 +44,9 @@ public class LinkByDateCreator {
       String extension = exifInfo.getFileTypeExtension();
       String fileName = captureTime.format(DateTimeFormatter.ISO_DATE_TIME) + "_" + exifInfo.getCameraSerial() + "_" + exifInfo.getFileNumber() + "." + extension;
 
+      //Store in the month
+      createLink(sourceFile, new File(createMonthDir(captureTime), "all"), fileName, extension);
+
       //Store in the day
       createLink(sourceFile, new File(createDayDir(captureTime), "all"), fileName, extension);
 
