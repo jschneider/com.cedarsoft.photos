@@ -77,7 +77,7 @@ public class LinkByDateCreator {
         File targetFile = new File(targetDirWithExtension, addSuffix(targetFileName, suffixCounter));
         LinkUtils.createSymbolicLink(sourceFile, targetFile);
         return targetFile;
-      } catch (LinkUtils.AlreadyExistsWithOtherTargetException e) {
+      } catch (LinkUtils.AlreadyExistsWithOtherTargetException ignore) {
         //Something went wrong
         suffixCounter++;
       }
