@@ -23,8 +23,6 @@ import java.util.logging.Logger;
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class Importer {
-  private static final Logger LOG = Logger.getLogger(Importer.class.getName());
-
   @Nonnull
   private static final Set<String> SUPPORTED_FILE_SUFFICIES = ImmutableSet.of("jpeg", "jpg", "cr2");
 
@@ -42,13 +40,12 @@ public class Importer {
    * Imports the given file
    */
   @NonUiThread
-  public void importFile(@Nonnull File fileToImport) throws IOException {
-    LOG.fine("Importing <" + fileToImport + ">");
+  public void importFile(@Nonnull File fileToImport, @Nonnull Listener listener) throws IOException {
     Hash hash = HashCalculator.calculate(ALGORITHM, fileToImport);
 
     File targetFile = imageStorage.getDataFile(hash);
     if (targetFile.exists()) {
-      LOG.fine("skipping file, already exists");
+      listener.skipped(fileToImport, targetFile);
       return;
     }
 
@@ -65,13 +62,15 @@ public class Importer {
       //Set to read only
       dir.setWritable(false, false);
     }
+
+    listener.imported(fileToImport, targetFile);
   }
 
   /**
    * Imports all files within the given directory
    */
   @NonUiThread
-  public void importDirectory(@Nonnull File directory) throws IOException {
+  public void importDirectory(@Nonnull File directory, @Nonnull Listener listener) throws IOException {
     if (!directory.isDirectory()) {
       throw new FileNotFoundException("Not a directory <" + directory.getAbsolutePath() + ">");
     }
@@ -83,12 +82,12 @@ public class Importer {
 
     for (File file : files) {
       if (isSupported(file)) {
-        importFile(file);
+        importFile(file, listener);
       }
 
       //Import all files from the sub directories
       if (file.isDirectory()) {
-        importDirectory(file);
+        importDirectory(file, listener);
       }
     }
   }
@@ -106,5 +105,17 @@ public class Importer {
     }
 
     return false;
+  }
+
+  public interface Listener {
+    /**
+     * Is called if the file is skipped
+     */
+    void skipped(@Nonnull File fileToImport, @Nonnull File targetFile);
+
+    /**
+     * Is called if the file has been imported
+     */
+    void imported(@Nonnull File fileToImport, @Nonnull File targetFile);
   }
 }
