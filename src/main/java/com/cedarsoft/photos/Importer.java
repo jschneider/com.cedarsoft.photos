@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * Imports photos from a given directory.
@@ -22,6 +23,8 @@ import java.util.Set;
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class Importer {
+  private static final Logger LOG = Logger.getLogger(Importer.class.getName());
+
   @Nonnull
   private static final Set<String> SUPPORTED_FILE_SUFFICIES = ImmutableSet.of("jpeg", "jpg", "cr2");
 
@@ -40,12 +43,12 @@ public class Importer {
    */
   @NonUiThread
   public void importFile(@Nonnull File fileToImport) throws IOException {
-    System.out.println("Importing <" + fileToImport + ">");
+    LOG.fine("Importing <" + fileToImport + ">");
     Hash hash = HashCalculator.calculate(ALGORITHM, fileToImport);
 
     File targetFile = imageStorage.getFile(hash);
     if (targetFile.exists()) {
-      System.out.println("skipping file, already exists");
+      LOG.fine("skipping file, already exists");
       return;
     }
 
