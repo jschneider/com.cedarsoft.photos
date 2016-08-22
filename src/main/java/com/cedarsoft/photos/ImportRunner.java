@@ -1,5 +1,6 @@
 package com.cedarsoft.photos;
 
+import com.cedarsoft.photos.di.Modules;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -11,7 +12,7 @@ import java.io.IOException;
  */
 public class ImportRunner {
   public static void main(String[] args) throws IOException {
-    Injector injector = Guice.createInjector(new StorageModule());
+    Injector injector = Guice.createInjector(Modules.getModules());
 
     Importer importer = injector.getInstance(Importer.class);
     importer.importDirectory(new File("/media/mule/data/media/photos/collustra/to-import/2016-08-18"));

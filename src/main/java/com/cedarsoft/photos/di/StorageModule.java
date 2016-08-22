@@ -1,5 +1,6 @@
-package com.cedarsoft.photos;
+package com.cedarsoft.photos.di;
 
+import com.cedarsoft.photos.ImageStorage;
 import com.google.inject.AbstractModule;
 
 import javax.inject.Singleton;
