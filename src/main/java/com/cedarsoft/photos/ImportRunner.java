@@ -18,10 +18,15 @@ public class ImportRunner {
     LinkByDateCreator linkByDateCreator = injector.getInstance(LinkByDateCreator.class);
 
     Importer importer = injector.getInstance(Importer.class);
-    importer.importDirectory(new File("/media/mule/data/media/photos/import/collustra/to-import/2016-08-08"), new Importer.Listener() {
+    importer.importDirectory(new File("/media/mule/data/media/photos/import/collustra/to-import"), new Importer.Listener() {
       @Override
       public void skipped(@Nonnull File fileToImport, @Nonnull File targetFile) {
         System.out.println("Skipped " + fileToImport);
+        try {
+          linkByDateCreator.createLink(targetFile);
+        } catch (IOException e) {
+          throw new RuntimeException(e);
+        }
       }
 
       @Override
