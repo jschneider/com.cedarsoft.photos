@@ -48,7 +48,20 @@ public class Importer {
       System.out.println("skipping file, already exists");
       return;
     }
-    Files.copy(fileToImport.toPath(), targetFile.toPath());
+
+    File dir = targetFile.getParentFile();
+
+    //Set writable before
+    dir.setWritable(true, true);
+    try {
+      Files.copy(fileToImport.toPath(), targetFile.toPath());
+      //Set the file to read only
+      targetFile.setWritable(false);
+      targetFile.setExecutable(false);
+    } finally {
+      //Set to read only
+      dir.setWritable(false, false);
+    }
   }
 
   /**
