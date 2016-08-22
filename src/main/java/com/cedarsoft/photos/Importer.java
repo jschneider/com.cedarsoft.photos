@@ -78,6 +78,11 @@ public class Importer {
       throw new FileNotFoundException("Not a directory <" + directory.getAbsolutePath() + ">");
     }
 
+    if (directory.getName().equals(".@__thumb")) {
+      //Skip thumbs dir
+      return;
+    }
+
     @Nullable File[] files = directory.listFiles();
     if (files == null) {
       throw new IllegalStateException("Could not list files in <" + directory.getAbsolutePath() + ">");
