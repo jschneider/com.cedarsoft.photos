@@ -57,10 +57,25 @@ public class LinkByDateCreator {
 
   @Nonnull
   private File createHourDir(@Nonnull ZonedDateTime time) {
-    File yearDir = new File(baseDir, String.valueOf(time.getYear()));
-    File monthDir = new File(yearDir, formatTwoDigits(time.getMonth().getValue()));
-    File dayDir = new File(monthDir, formatTwoDigits(time.getDayOfMonth()));
+    File dayDir = createDayDir(time);
     return new File(dayDir, formatTwoDigits(time.getHour()));
+  }
+
+  @Nonnull
+  private File createDayDir(@Nonnull ZonedDateTime time) {
+    File monthDir = createMonthDir(time);
+    return new File(monthDir, formatTwoDigits(time.getDayOfMonth()));
+  }
+
+  @Nonnull
+  private File createMonthDir(@Nonnull ZonedDateTime time) {
+    File yearDir = createYearDir(time);
+    return new File(yearDir, formatTwoDigits(time.getMonth().getValue()));
+  }
+
+  @Nonnull
+  private File createYearDir(@Nonnull ZonedDateTime time) {
+    return new File(baseDir, String.valueOf(time.getYear()));
   }
 
   @Nonnull
