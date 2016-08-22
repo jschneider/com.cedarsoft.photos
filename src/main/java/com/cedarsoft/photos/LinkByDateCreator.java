@@ -50,7 +50,7 @@ public class LinkByDateCreator {
         }
       }
 
-      String fileName = captureTime.format(DateTimeFormatter.ISO_DATE_TIME) + "." + exifInfo.getFileTypeExtension();
+      String fileName = captureTime.format(DateTimeFormatter.ISO_DATE_TIME) + "_" + exifInfo.getCameraSerial() + "_" + exifInfo.getFileNumber() + "." + exifInfo.getFileTypeExtension();
       File targetFile = new File(hourDir, fileName);
 
       LinkUtils.createSymbolicLink(sourceFile, targetFile);
