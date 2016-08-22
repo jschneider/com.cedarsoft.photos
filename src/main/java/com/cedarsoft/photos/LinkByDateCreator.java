@@ -13,6 +13,8 @@ import java.text.NumberFormat;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 /**
  * Creates symlinks by date
@@ -90,13 +92,15 @@ public class LinkByDateCreator {
   @Nonnull
   private File createDayDir(@Nonnull ZonedDateTime time) {
     File monthDir = createMonthDir(time);
-    return new File(monthDir, formatTwoDigits(time.getDayOfMonth()));
+    String dirName = formatTwoDigits(time.getDayOfMonth()) + "_" + time.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.US);
+    return new File(monthDir, dirName);
   }
 
   @Nonnull
   private File createMonthDir(@Nonnull ZonedDateTime time) {
     File yearDir = createYearDir(time);
-    return new File(yearDir, formatTwoDigits(time.getMonth().getValue()));
+    String dirName = formatTwoDigits(time.getMonth().getValue()) + "_" + time.getMonth().getDisplayName(TextStyle.FULL, Locale.US);
+    return new File(yearDir, dirName);
   }
 
   @Nonnull
