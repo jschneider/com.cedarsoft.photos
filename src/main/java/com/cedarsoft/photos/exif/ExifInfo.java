@@ -188,6 +188,11 @@ public class ExifInfo {
     return String.valueOf(findEntry("LensType").getValue());
   }
 
+  @Nonnull
+  public String getFileTypeExtension() throws NotFoundException {
+    return String.valueOf(findEntry("FileTypeExtension").getValue());
+  }
+
   public long getCameraSerial() throws NotFoundException {
     Object value = findEntry("SerialNumber").getValueNonNull();
     return Long.valueOf(String.valueOf(value));
