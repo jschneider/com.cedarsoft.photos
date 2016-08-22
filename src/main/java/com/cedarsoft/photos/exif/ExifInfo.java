@@ -170,6 +170,17 @@ public class ExifInfo {
     return ((Integer.parseInt(firstPart) - 100) * 10000) + Integer.parseInt(secondPart);
   }
 
+  /**
+   * Return 0 if there is no file number
+   */
+  public int getFileNumberSafe() {
+    try {
+      return getFileNumber();
+    } catch (NotFoundException ignore) {
+      return 0;
+    }
+  }
+
   @Nonnull
 
   public String getModel() throws NotFoundException {

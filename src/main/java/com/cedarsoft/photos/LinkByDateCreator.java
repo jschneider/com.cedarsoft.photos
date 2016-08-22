@@ -42,7 +42,7 @@ public class LinkByDateCreator {
       ZonedDateTime captureTime = exifInfo.getCaptureTime(ZoneOffset.UTC);
 
       String extension = exifInfo.getFileTypeExtension();
-      String fileName = captureTime.format(DateTimeFormatter.ISO_DATE_TIME) + "_" + exifInfo.getCameraSerial() + "_" + exifInfo.getFileNumber() + "." + extension;
+      String fileName = captureTime.format(DateTimeFormatter.ISO_DATE_TIME) + "_" + exifInfo.getCameraSerial() + "_" + exifInfo.getFileNumberSafe() + "." + extension;
 
       //Store in the month
       createLink(sourceFile, new File(createMonthDir(captureTime), "all"), fileName, extension);
