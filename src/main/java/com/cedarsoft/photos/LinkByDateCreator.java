@@ -6,13 +6,10 @@ import com.cedarsoft.photos.exif.ExifExtractor;
 import com.cedarsoft.photos.exif.ExifInfo;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.NumberFormat;
-import java.time.Month;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -41,17 +38,38 @@ public class LinkByDateCreator {
       ExifInfo exifInfo = exifExtractor.extractInfo(in);
 
       ZonedDateTime captureTime = exifInfo.getCaptureTime(ZoneOffset.UTC);
-      File hourDir = createHourDir(captureTime);
-      if (!hourDir.isDirectory()) {
-        if (!hourDir.mkdirs()) {
-          throw new IOException("Could not create <" + hourDir.getAbsolutePath() + ">");
-        }
-      }
 
-      String fileName = captureTime.format(DateTimeFormatter.ISO_DATE_TIME) + "_" + exifInfo.getCameraSerial() + "_" + exifInfo.getFileNumber() + "." + exifInfo.getFileTypeExtension();
-      File targetFile = new File(hourDir, fileName);
+      //Store in the hour
+      File hourDir = createHourDir(captureTime);
+
+      //The target directory (uses the extension as directory name)
+      File targetDir;
+      String extension = exifInfo.getFileTypeExtension();
+      if (isRaw(extension)) {
+        targetDir = new File(hourDir, extension);
+      }
+      else {
+        targetDir = hourDir;
+      }
+      ensureDirExists(targetDir);
+
+      String fileName = captureTime.format(DateTimeFormatter.ISO_DATE_TIME) + "_" + exifInfo.getCameraSerial() + "_" + exifInfo.getFileNumber() + "." + extension;
+      File targetFile = new File(targetDir, fileName);
 
       LinkUtils.createSymbolicLink(sourceFile, targetFile);
+    }
+  }
+
+  //TODO move
+  private static boolean isRaw(@Nonnull String extension) {
+    return extension.equalsIgnoreCase("cr2");
+  }
+
+  private void ensureDirExists(File hourDir) throws IOException {
+    if (!hourDir.isDirectory()) {
+      if (!hourDir.mkdirs()) {
+        throw new IOException("Could not create <" + hourDir.getAbsolutePath() + ">");
+      }
     }
   }
 
