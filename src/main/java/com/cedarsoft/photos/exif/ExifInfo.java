@@ -51,6 +51,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 /**
@@ -58,6 +59,8 @@ import java.util.regex.Pattern;
  */
 @Immutable
 public class ExifInfo {
+  private static final Logger LOG = Logger.getLogger(ExifInfo.class.getName());
+
   @Nonnull
   public static final ExifInfo UNKNOWN = new ExifInfo();
 
@@ -85,7 +88,7 @@ public class ExifInfo {
         entriesBuilder.put(entry.getKey(), entry);
       }
       else {
-        System.out.println("WARNING: Duplicate key <" + entry.getKey() + ">");
+        LOG.fine("WARNING: Duplicate key <" + entry.getKey() + ">");
       }
     }
 
@@ -102,11 +105,11 @@ public class ExifInfo {
    * Returns the capture time.
    * It is necessary to add a time zone since that is not stored within the exif data
    *
-   * @param zoneId the date time zone that is used to calculate the date. Only used if there is no time zone setting in the EXIF
+   * @param fallbackCaptureZoneId the date time zone that is used to calculate the date. Only used if there is no time zone setting in the EXIF
    * @return the capture time
    */
   @Nonnull
-  public ZonedDateTime getCaptureTime(@Nonnull ZoneId zoneId) throws NotFoundException {
+  public ZonedDateTime getCaptureTime(@Nonnull ZoneId fallbackCaptureZoneId) throws NotFoundException {
     Object createDateValue = findEntry("CreateDate").getValue();
     if (createDateValue == null) {
       throw new IllegalArgumentException("No CreateDate found");
@@ -132,7 +135,7 @@ public class ExifInfo {
       Object timeZoneValue = findEntry("TimeZone").getValue();
       relevantZone = ZoneId.of(String.valueOf(timeZoneValue));
     } catch (NotFoundException ignore) {
-      relevantZone = zoneId;
+      relevantZone = fallbackCaptureZoneId;
     }
 
     TemporalAccessor temporalAccessor = timeFormatter.withZone(relevantZone).parse(String.valueOf(createDateValue));
@@ -186,6 +189,11 @@ public class ExifInfo {
   @Nonnull
   public String getLensType() throws NotFoundException {
     return String.valueOf(findEntry("LensType").getValue());
+  }
+
+  @Nonnull
+  public String getFileTypeExtension() throws NotFoundException {
+    return String.valueOf(findEntry("FileTypeExtension").getValue());
   }
 
   public long getCameraSerial() throws NotFoundException {
