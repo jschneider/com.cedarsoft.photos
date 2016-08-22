@@ -25,13 +25,10 @@ public class LinkByDateCreator {
   @Nonnull
   private final File baseDir;
   @Nonnull
-  private final ZoneId zoneId;
-  @Nonnull
   private final ExifExtractor exifExtractor;
 
-  public LinkByDateCreator(@Nonnull File baseDir, @Nonnull ZoneId zoneId, @Nonnull ExifExtractor exifExtractor) {
+  public LinkByDateCreator(@Nonnull File baseDir, @Nonnull ExifExtractor exifExtractor) {
     this.baseDir = baseDir;
-    this.zoneId = zoneId;
     this.exifExtractor = exifExtractor;
   }
 

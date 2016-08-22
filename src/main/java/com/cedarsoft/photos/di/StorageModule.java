@@ -10,7 +10,6 @@ import com.google.inject.Provides;
 import javax.annotation.Nonnull;
 import javax.inject.Singleton;
 import java.io.File;
-import java.time.ZoneId;
 
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
@@ -38,6 +37,6 @@ public class StorageModule extends AbstractModule {
   @Singleton
   public LinkByDateCreator provideLinkByDateCreator(@Nonnull ExifExtractor exifExtractor) {
     File byDateBaseDir = new File("/media/mule/data/media/photos/by-date");
-    return new LinkByDateCreator(byDateBaseDir, ZoneId.of("Europe/Berlin"), exifExtractor);
+    return new LinkByDateCreator(byDateBaseDir, exifExtractor);
   }
 }
