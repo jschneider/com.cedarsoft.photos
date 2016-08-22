@@ -35,7 +35,8 @@ public class LinkByDateCreator {
   /**
    * Creates a link for the given source file
    */
-  public void createLink(@Nonnull File sourceFile) throws IOException, NotFoundException {
+  @Nonnull
+  public File createLink(@Nonnull File sourceFile) throws IOException, NotFoundException {
     try (FileInputStream in = new FileInputStream(sourceFile)) {
       ExifInfo exifInfo = exifExtractor.extractInfo(in);
 
@@ -51,14 +52,15 @@ public class LinkByDateCreator {
       createLink(sourceFile, new File(createDayDir(captureTime), "all"), fileName, extension);
 
       //Store in the hour
-      createLink(sourceFile, createHourDir(captureTime), fileName, extension);
+      return createLink(sourceFile, createHourDir(captureTime), fileName, extension);
     }
   }
 
   /**
    * Creates a link
    */
-  private void createLink(@Nonnull File sourceFile, @Nonnull File targetDir, @Nonnull String targetFileName, @Nonnull String extension) throws IOException {
+  @Nonnull
+  private File createLink(@Nonnull File sourceFile, @Nonnull File targetDir, @Nonnull String targetFileName, @Nonnull String extension) throws IOException {
     //The target directory (uses the extension as directory name)
     File targetDirWithExtension;
     if (isRaw(extension)) {
@@ -71,6 +73,7 @@ public class LinkByDateCreator {
 
     File targetFile = new File(targetDirWithExtension, targetFileName);
     LinkUtils.createSymbolicLink(sourceFile, targetFile);
+    return targetFile;
   }
 
   //TODO move
