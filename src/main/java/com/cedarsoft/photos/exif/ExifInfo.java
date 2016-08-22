@@ -51,6 +51,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 /**
@@ -58,6 +59,8 @@ import java.util.regex.Pattern;
  */
 @Immutable
 public class ExifInfo {
+  private static final Logger LOG = Logger.getLogger(ExifInfo.class.getName());
+
   @Nonnull
   public static final ExifInfo UNKNOWN = new ExifInfo();
 
@@ -85,7 +88,7 @@ public class ExifInfo {
         entriesBuilder.put(entry.getKey(), entry);
       }
       else {
-        System.out.println("WARNING: Duplicate key <" + entry.getKey() + ">");
+        LOG.fine("WARNING: Duplicate key <" + entry.getKey() + ">");
       }
     }
 
