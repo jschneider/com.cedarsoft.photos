@@ -1,9 +1,11 @@
 package com.cedarsoft.photos;
 
 import com.cedarsoft.photos.di.Modules;
+import com.cedarsoft.photos.di.StorageModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 
@@ -17,6 +19,22 @@ public class LinkByDateCreatorRunner {
     Injector injector = Guice.createInjector(Modules.getModules());
     LinkByDateCreator linkByDateCreator = injector.getInstance(LinkByDateCreator.class);
 
-    linkByDateCreator.createLink(new File("/media/mule/data/media/photos/backend/ff/716a25782bdaad8e76a7fb7a4dd740d9ed7fc358515c71f8c919b0590d8e5c"));
+    ImageStorage storage = injector.getInstance(ImageStorage.class);
+
+    //link all files
+    @Nullable File[] subDirs = storage.getBaseDir().listFiles();
+    assert subDirs != null;
+    for (File subDir : subDirs) {
+      if (!subDir.isDirectory()) {
+        continue;
+      }
+
+      File[] files = subDir.listFiles();
+      assert files != null;
+      for (File file : files) {
+        System.out.println("Creating link for <" + file + ">");
+        linkByDateCreator.createLink(file);
+      }
+    }
   }
 }

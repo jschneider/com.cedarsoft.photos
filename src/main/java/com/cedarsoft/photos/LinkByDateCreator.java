@@ -6,6 +6,7 @@ import com.cedarsoft.photos.exif.ExifExtractor;
 import com.cedarsoft.photos.exif.ExifInfo;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

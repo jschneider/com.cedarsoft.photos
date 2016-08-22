@@ -50,4 +50,9 @@ public class ImageStorage {
   private File getDir(@Nonnull String firstPart) {
     return new File(baseDir, firstPart);
   }
+
+  @Nonnull
+  public File getBaseDir() {
+    return baseDir;
+  }
 }
