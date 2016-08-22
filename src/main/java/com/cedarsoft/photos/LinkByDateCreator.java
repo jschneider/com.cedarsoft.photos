@@ -39,25 +39,33 @@ public class LinkByDateCreator {
 
       ZonedDateTime captureTime = exifInfo.getCaptureTime(ZoneOffset.UTC);
 
-      //Store in the hour
-      File hourDir = createHourDir(captureTime);
-
-      //The target directory (uses the extension as directory name)
-      File targetDir;
       String extension = exifInfo.getFileTypeExtension();
-      if (isRaw(extension)) {
-        targetDir = new File(hourDir, extension);
-      }
-      else {
-        targetDir = hourDir;
-      }
-      ensureDirExists(targetDir);
-
       String fileName = captureTime.format(DateTimeFormatter.ISO_DATE_TIME) + "_" + exifInfo.getCameraSerial() + "_" + exifInfo.getFileNumber() + "." + extension;
-      File targetFile = new File(targetDir, fileName);
 
-      LinkUtils.createSymbolicLink(sourceFile, targetFile);
+      //Store in the day
+      createLink(sourceFile, new File(createDayDir(captureTime), "all"), fileName, extension);
+
+      //Store in the hour
+      createLink(sourceFile, createHourDir(captureTime), fileName, extension);
     }
+  }
+
+  /**
+   * Creates a link
+   */
+  private void createLink(@Nonnull File sourceFile, @Nonnull File targetDir, @Nonnull String targetFileName, @Nonnull String extension) throws IOException {
+    //The target directory (uses the extension as directory name)
+    File targetDirWithExtension;
+    if (isRaw(extension)) {
+      targetDirWithExtension = new File(targetDir, extension);
+    }
+    else {
+      targetDirWithExtension = targetDir;
+    }
+    ensureDirExists(targetDirWithExtension);
+
+    File targetFile = new File(targetDirWithExtension, targetFileName);
+    LinkUtils.createSymbolicLink(sourceFile, targetFile);
   }
 
   //TODO move
