@@ -4,6 +4,7 @@ import com.cedarsoft.photos.di.Modules;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 
@@ -15,6 +16,16 @@ public class ImportRunner {
     Injector injector = Guice.createInjector(Modules.getModules());
 
     Importer importer = injector.getInstance(Importer.class);
-    importer.importDirectory(new File("/media/mule/data/media/photos/collustra/to-import/2016-08-18"));
+    importer.importDirectory(new File("/media/mule/data/media/photos/import/collustra/to-import/2016-08-18"), new Importer.Listener() {
+      @Override
+      public void skipped(@Nonnull File fileToImport, @Nonnull File targetFile) {
+        System.out.println("Skipped " + fileToImport);
+      }
+
+      @Override
+      public void imported(@Nonnull File fileToImport, @Nonnull File targetFile) {
+        System.out.println("Imported " + fileToImport + " --> " + targetFile.getParentFile().getParentFile().getName() + "/" + targetFile.getParentFile().getName());
+      }
+    });
   }
 }

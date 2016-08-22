@@ -28,10 +28,19 @@ public class ImageStorageTest {
 
   @Test
   public void basic() throws Exception {
-    File file = imageStorage.getFile(hash);
+    File file = imageStorage.getDir(hash);
 
     assertThat(file.getParentFile()).hasName("d9");
     assertThat(file).hasName("58566e96bc10f33f4209fbc2ed05f9096ef9a0");
     assertThat(file.getParentFile()).exists();
+  }
+
+  @Test
+  public void dataFile() throws Exception {
+    File file = imageStorage.getDataFile(hash);
+
+    assertThat(file.getParentFile().getParentFile()).hasName("d9");
+    assertThat(file.getParentFile()).hasName("58566e96bc10f33f4209fbc2ed05f9096ef9a0");
+    assertThat(file).hasName("data");
   }
 }

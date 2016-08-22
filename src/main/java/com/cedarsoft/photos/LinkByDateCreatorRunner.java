@@ -22,18 +22,20 @@ public class LinkByDateCreatorRunner {
     ImageStorage storage = injector.getInstance(ImageStorage.class);
 
     //link all files
-    @Nullable File[] subDirs = storage.getBaseDir().listFiles();
-    assert subDirs != null;
-    for (File subDir : subDirs) {
-      if (!subDir.isDirectory()) {
+    @Nullable File[] firstPartHashDirs = storage.getBaseDir().listFiles();
+    assert firstPartHashDirs != null;
+    for (File firstPartHashDir : firstPartHashDirs) {
+      if (!firstPartHashDir.isDirectory()) {
         continue;
       }
 
-      File[] files = subDir.listFiles();
-      assert files != null;
-      for (File file : files) {
-        System.out.println("Creating link for <" + file + ">");
-        linkByDateCreator.createLink(file);
+      File[] remainingPartHashDirs = firstPartHashDir.listFiles();
+      assert remainingPartHashDirs != null;
+      for (File remainingPartHashDir : remainingPartHashDirs) {
+        System.out.println("Creating link for <" + remainingPartHashDir + ">");
+
+        File dataFile = new File(remainingPartHashDir, ImageStorage.DATA_FILE_NAME);
+        linkByDateCreator.createLink(dataFile);
       }
     }
   }
