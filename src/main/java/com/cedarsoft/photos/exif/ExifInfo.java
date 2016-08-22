@@ -102,11 +102,11 @@ public class ExifInfo {
    * Returns the capture time.
    * It is necessary to add a time zone since that is not stored within the exif data
    *
-   * @param zoneId the date time zone that is used to calculate the date. Only used if there is no time zone setting in the EXIF
+   * @param fallbackCaptureZoneId the date time zone that is used to calculate the date. Only used if there is no time zone setting in the EXIF
    * @return the capture time
    */
   @Nonnull
-  public ZonedDateTime getCaptureTime(@Nonnull ZoneId zoneId) throws NotFoundException {
+  public ZonedDateTime getCaptureTime(@Nonnull ZoneId fallbackCaptureZoneId) throws NotFoundException {
     Object createDateValue = findEntry("CreateDate").getValue();
     if (createDateValue == null) {
       throw new IllegalArgumentException("No CreateDate found");
@@ -132,7 +132,7 @@ public class ExifInfo {
       Object timeZoneValue = findEntry("TimeZone").getValue();
       relevantZone = ZoneId.of(String.valueOf(timeZoneValue));
     } catch (NotFoundException ignore) {
-      relevantZone = zoneId;
+      relevantZone = fallbackCaptureZoneId;
     }
 
     TemporalAccessor temporalAccessor = timeFormatter.withZone(relevantZone).parse(String.valueOf(createDateValue));
