@@ -61,6 +61,8 @@ public class Importer {
       //Set the file to read only
       targetFile.setWritable(false);
       targetFile.setExecutable(false);
+    } catch (LinkUtils.AlreadyExistsWithOtherTargetException e) {
+      throw new IOException(e);
     } finally {
       //Set to read only
       dir.setWritable(false, false);
