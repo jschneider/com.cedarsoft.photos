@@ -103,6 +103,20 @@ public class ExifInfo {
   }
 
   /**
+   * Returns null if there is no capture time in the exif data
+   */
+  @Nullable
+  public ZonedDateTime getCaptureTimeNullable(@Nonnull ZoneId fallbackCaptureZoneId) {
+    try {
+      return getCaptureTime(fallbackCaptureZoneId);
+    } catch (NotFoundException ignore) {
+    }
+
+    return null;
+  }
+
+
+  /**
    * Returns the capture time.
    * It is necessary to add a time zone since that is not stored within the exif data
    *
@@ -215,15 +229,6 @@ public class ExifInfo {
   public String getCameraId() {
     try {
       return String.valueOf(getCameraSerial());
-    } catch (NotFoundException ignore) {
-    }
-
-    try {
-      String internalSerial = getInternalSerial().trim();
-      if (internalSerial.length() > 12) {
-        return internalSerial.substring(internalSerial.length() - 12);
-      }
-      return internalSerial;
     } catch (NotFoundException ignore) {
     }
 

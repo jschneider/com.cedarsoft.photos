@@ -6,6 +6,7 @@ import com.cedarsoft.photos.exif.ExifExtractor;
 import com.cedarsoft.photos.exif.ExifInfo;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -40,9 +41,13 @@ public class LinkByDateCreator {
     try (FileInputStream in = new FileInputStream(sourceFile)) {
       ExifInfo exifInfo = exifExtractor.extractInfo(in);
 
-      ZonedDateTime captureTime = exifInfo.getCaptureTime(ZoneOffset.UTC);
-
       String extension = exifInfo.getFileTypeExtension();
+
+      @Nullable ZonedDateTime captureTime = exifInfo.getCaptureTimeNullable(ZoneOffset.UTC);
+      if (captureTime == null) {
+        return createUnknownDateLink(sourceFile, exifInfo.getCameraId() + "_" + exifInfo.getFileNumberSafe() + "." + extension, extension);
+      }
+
       String fileName = captureTime.format(DateTimeFormatter.ISO_DATE_TIME) + "_" + exifInfo.getCameraId() + "_" + exifInfo.getFileNumberSafe() + "." + extension;
 
       //Store in the month
@@ -54,6 +59,12 @@ public class LinkByDateCreator {
       //Store in the hour
       return createLink(sourceFile, createHourDir(captureTime), fileName, extension);
     }
+  }
+
+  @Nonnull
+  private File createUnknownDateLink(@Nonnull File sourceFile, @Nonnull String targetFileName, @Nonnull String extension) throws IOException {
+    File targetDir = createUnknownDateDir();
+    return createLink(sourceFile, targetDir, targetFileName, extension);
   }
 
   /**
@@ -138,6 +149,11 @@ public class LinkByDateCreator {
   @Nonnull
   private File createYearDir(@Nonnull ZonedDateTime time) {
     return new File(baseDir, String.valueOf(time.getYear()));
+  }
+
+  @Nonnull
+  private File createUnknownDateDir() {
+    return new File(baseDir, "unknown-date");
   }
 
   @Nonnull
