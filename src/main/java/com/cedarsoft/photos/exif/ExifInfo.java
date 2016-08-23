@@ -37,7 +37,6 @@ import org.apache.commons.io.IOUtils;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
-import java.awt.Dimension;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
@@ -209,9 +208,49 @@ public class ExifInfo {
     return String.valueOf(findEntry("FileTypeExtension").getValue());
   }
 
+  /**
+   * Returns a camera identifier (as specific as possible)
+   */
+  @Nonnull
+  public String getCameraId() {
+    try {
+      return String.valueOf(getCameraSerial());
+    } catch (NotFoundException ignore) {
+    }
+
+    try {
+      String internalSerial = getInternalSerial().trim();
+      if (internalSerial.length() > 12) {
+        return internalSerial.substring(internalSerial.length() - 12);
+      }
+      return internalSerial;
+    } catch (NotFoundException ignore) {
+    }
+
+    //Fallback if there is no serial number
+    return getCameraInfo().getModel().replace(" ", "_");
+  }
+
   public long getCameraSerial() throws NotFoundException {
     Object value = findEntry("SerialNumber").getValueNonNull();
     return Long.valueOf(String.valueOf(value));
+  }
+
+  public long getCameraSerialSafe() {
+    try {
+      return getCameraSerial();
+    } catch (NotFoundException ignore) {
+      return -1;
+    }
+  }
+
+  @Nonnull
+  public String getInternalSerialSafe() {
+    try {
+      return getInternalSerial();
+    } catch (NotFoundException ignore) {
+      return "";
+    }
   }
 
   @Nonnull
@@ -254,7 +293,7 @@ public class ExifInfo {
    */
   @Nonnull
   public CameraInfo getCameraInfo() throws NotFoundException {
-    return new CameraInfo(getCameraSerial(), getMake(), getModel(), getInternalSerial());
+    return new CameraInfo(getCameraSerialSafe(), getMake(), getModel(), getInternalSerialSafe());
   }
 
   public double getMaxAperture() throws NotFoundException {
