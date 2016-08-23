@@ -29,6 +29,7 @@
 package com.cedarsoft.photos.exif;
 
 import com.cedarsoft.exceptions.NotFoundException;
+import com.cedarsoft.image.Resolution;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.io.IOUtils;
@@ -36,6 +37,7 @@ import org.apache.commons.io.IOUtils;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
@@ -297,7 +299,14 @@ public class ExifInfo {
   }
 
   @Nonnull
+  public Resolution getDimension() {
+    int width = Integer.parseInt(String.valueOf(findEntry("ImageWidth").getValueNonNull()));
+    int height = Integer.parseInt(String.valueOf(findEntry("ImageHeight").getValueNonNull()));
 
+    return new Resolution(width, height);
+  }
+
+  @Nonnull
   public String getOrientation() {
     return String.valueOf(findEntry("Orientation").getValueNonNull());
   }
@@ -308,6 +317,7 @@ public class ExifInfo {
       "entries=" + entries +
       '}';
   }
+
   //  public int getHyperfocalDistance() {
   //    return findEntry( "HyperfocalDistance" );
   //  }

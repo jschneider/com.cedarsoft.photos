@@ -2,9 +2,11 @@ package com.cedarsoft.photos.exif;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -73,4 +75,12 @@ public class ExifExtractor {
     extractDetailed(imageIn, exifOut);
     return new ExifInfo(new ByteArrayInputStream(exifOut.toByteArray()));
   }
+
+  @Nonnull
+  public ExifInfo extractInfo(@Nonnull File imageFile) throws IOException {
+    try (InputStream in = new BufferedInputStream(new FileInputStream(imageFile))) {
+      return extractInfo(in);
+    }
+  }
+
 }
