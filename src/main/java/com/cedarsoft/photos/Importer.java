@@ -4,6 +4,7 @@ import com.cedarsoft.annotations.NonUiThread;
 import com.cedarsoft.crypt.Algorithm;
 import com.cedarsoft.crypt.Hash;
 import com.cedarsoft.crypt.HashCalculator;
+import com.cedarsoft.io.LinkUtils;
 import com.google.common.collect.ImmutableSet;
 
 import javax.annotation.Nonnull;
@@ -54,10 +55,14 @@ public class Importer {
     //Set writable before
     dir.setWritable(true, true);
     try {
-      Files.copy(fileToImport.toPath(), targetFile.toPath());
+      //Create a hard link
+      LinkUtils.createHardLink(fileToImport, targetFile);
+
       //Set the file to read only
       targetFile.setWritable(false);
       targetFile.setExecutable(false);
+    } catch (LinkUtils.AlreadyExistsWithOtherTargetException e) {
+      throw new IOException(e);
     } finally {
       //Set to read only
       dir.setWritable(false, false);
@@ -73,6 +78,11 @@ public class Importer {
   public void importDirectory(@Nonnull File directory, @Nonnull Listener listener) throws IOException {
     if (!directory.isDirectory()) {
       throw new FileNotFoundException("Not a directory <" + directory.getAbsolutePath() + ">");
+    }
+
+    if (directory.getName().equals(".@__thumb")) {
+      //Skip thumbs dir
+      return;
     }
 
     @Nullable File[] files = directory.listFiles();

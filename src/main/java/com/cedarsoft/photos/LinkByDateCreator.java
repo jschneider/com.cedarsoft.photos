@@ -35,27 +35,32 @@ public class LinkByDateCreator {
   /**
    * Creates a link for the given source file
    */
-  public void createLink(@Nonnull File sourceFile) throws IOException, NotFoundException {
+  @Nonnull
+  public File createLink(@Nonnull File sourceFile) throws IOException, NotFoundException {
     try (FileInputStream in = new FileInputStream(sourceFile)) {
       ExifInfo exifInfo = exifExtractor.extractInfo(in);
 
       ZonedDateTime captureTime = exifInfo.getCaptureTime(ZoneOffset.UTC);
 
       String extension = exifInfo.getFileTypeExtension();
-      String fileName = captureTime.format(DateTimeFormatter.ISO_DATE_TIME) + "_" + exifInfo.getCameraSerial() + "_" + exifInfo.getFileNumber() + "." + extension;
+      String fileName = captureTime.format(DateTimeFormatter.ISO_DATE_TIME) + "_" + exifInfo.getCameraSerial() + "_" + exifInfo.getFileNumberSafe() + "." + extension;
+
+      //Store in the month
+      createLink(sourceFile, new File(createMonthDir(captureTime), "all"), fileName, extension);
 
       //Store in the day
       createLink(sourceFile, new File(createDayDir(captureTime), "all"), fileName, extension);
 
       //Store in the hour
-      createLink(sourceFile, createHourDir(captureTime), fileName, extension);
+      return createLink(sourceFile, createHourDir(captureTime), fileName, extension);
     }
   }
 
   /**
    * Creates a link
    */
-  private void createLink(@Nonnull File sourceFile, @Nonnull File targetDir, @Nonnull String targetFileName, @Nonnull String extension) throws IOException {
+  @Nonnull
+  private File createLink(@Nonnull File sourceFile, @Nonnull File targetDir, @Nonnull String targetFileName, @Nonnull String extension) throws IOException {
     //The target directory (uses the extension as directory name)
     File targetDirWithExtension;
     if (isRaw(extension)) {
@@ -66,8 +71,35 @@ public class LinkByDateCreator {
     }
     ensureDirExists(targetDirWithExtension);
 
-    File targetFile = new File(targetDirWithExtension, targetFileName);
-    LinkUtils.createSymbolicLink(sourceFile, targetFile);
+    int suffixCounter = 0;
+    while (true) {
+      try {
+        File targetFile = new File(targetDirWithExtension, addSuffix(targetFileName, suffixCounter));
+        LinkUtils.createSymbolicLink(sourceFile, targetFile);
+        return targetFile;
+      } catch (LinkUtils.AlreadyExistsWithOtherTargetException ignore) {
+        //Something went wrong
+        suffixCounter++;
+      }
+    }
+  }
+
+  @Nonnull
+  static String addSuffix(@Nonnull String targetFileName, int suffixCounter) {
+    if (suffixCounter == 0) {
+      //Do not add a "0"
+      return targetFileName;
+    }
+
+    int lastIndex = targetFileName.lastIndexOf('.');
+    if (lastIndex < 0) {
+      return targetFileName + "_" + suffixCounter;
+    }
+
+    String firstPart = targetFileName.substring(0, lastIndex);
+    String lastPart = targetFileName.substring(lastIndex);
+
+    return firstPart + "_" + suffixCounter + lastPart;
   }
 
   //TODO move

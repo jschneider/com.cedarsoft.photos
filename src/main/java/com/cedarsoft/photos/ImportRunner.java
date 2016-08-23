@@ -7,6 +7,8 @@ import com.google.inject.Injector;
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
@@ -17,22 +19,38 @@ public class ImportRunner {
 
     LinkByDateCreator linkByDateCreator = injector.getInstance(LinkByDateCreator.class);
 
+    List<File> failedLinks = new ArrayList<>();
+
     Importer importer = injector.getInstance(Importer.class);
-    importer.importDirectory(new File("/media/mule/data/media/photos/import/collustra/to-import/2016-08-08"), new Importer.Listener() {
+    importer.importDirectory(new File("/media/mule/data/media/photos/import/todo"), new Importer.Listener() {
       @Override
       public void skipped(@Nonnull File fileToImport, @Nonnull File targetFile) {
         System.out.println("Skipped " + fileToImport);
+        try {
+          System.out.println("\t" + linkByDateCreator.createLink(targetFile).getAbsolutePath());
+        } catch (Exception e) {
+          e.printStackTrace();
+          failedLinks.add(targetFile);
+        }
       }
 
       @Override
       public void imported(@Nonnull File fileToImport, @Nonnull File targetFile) {
         System.out.println("Imported " + fileToImport + " --> " + targetFile.getParentFile().getParentFile().getName() + "/" + targetFile.getParentFile().getName());
         try {
-          linkByDateCreator.createLink(targetFile);
-        } catch (IOException e) {
-          throw new RuntimeException(e);
+          System.out.println("\t" + linkByDateCreator.createLink(targetFile).getAbsolutePath());
+        } catch (Exception e) {
+          e.printStackTrace();
+          failedLinks.add(targetFile);
         }
       }
     });
+
+    System.out.println("# Import finished ################");
+    System.out.println("Failed links:");
+
+    for (File failedLink : failedLinks) {
+      System.out.println("\t" + failedLink.getAbsolutePath());
+    }
   }
 }

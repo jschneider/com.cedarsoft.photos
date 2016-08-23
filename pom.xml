@@ -26,7 +26,7 @@
 
   <properties>
     <java.version>1.8</java.version>
-    <commons.version>7.2.0</commons.version>
+    <commons.version>7.3.0-SNAPSHOT</commons.version>
   </properties>
 
   <dependencyManagement>
