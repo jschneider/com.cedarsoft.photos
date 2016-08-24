@@ -48,6 +48,7 @@ public class ExifExtractor {
    * @param target               the target
    * @param includingOrientation whether the orientation is included
    */
+  @Deprecated //untested!
   public void copyExif(@Nonnull File source, @Nonnull File target, boolean includingOrientation) throws IOException {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -61,8 +62,9 @@ public class ExifExtractor {
     args.add("-overwrite_original");
     args.add("-TagsFromFile");
     args.add(source.getAbsolutePath());
+    args.add(target.getAbsolutePath());
 
-    exifTool.run(target, out, args.toArray(new String[args.size()]));
+    exifTool.run(null, out, args.toArray(new String[args.size()]));
 
     if (out.toByteArray().length > 0) {
       throw new IOException("Conversion failed due to " + new String(out.toByteArray()));

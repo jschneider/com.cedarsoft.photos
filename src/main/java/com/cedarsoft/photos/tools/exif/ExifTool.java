@@ -29,7 +29,9 @@
 package com.cedarsoft.photos.tools.exif;
 
 import com.cedarsoft.execution.OutputRedirector;
+import com.cedarsoft.photos.tools.AbstractCommandLineTool;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,77 +47,18 @@ import java.util.List;
  * Wrapper for exiftool
  */
 //TODO add SequenceNumber
-public class ExifTool {
-  @Nonnull
-  private final File bin;
+public class ExifTool extends AbstractCommandLineTool {
 
   public ExifTool(@Nonnull File bin) {
-    if (!bin.exists()) {
-      throw new IllegalArgumentException("bin does not exist " + bin.getAbsolutePath());
-    }
-    this.bin = bin;
+    super(bin);
   }
 
   public ExifTool(@Nonnull String bin) {
     this(new File(bin));
   }
 
-  public void run(@Nonnull InputStream source, @Nonnull OutputStream out, @Nonnull String... args) throws IOException {
-    List<String> commands = new ArrayList<>();
-    commands.add(bin.getAbsolutePath());
-    commands.addAll(Arrays.asList(args));
-
-    ProcessBuilder builder = new ProcessBuilder(commands);
-    Process process = builder.start();
-
-    Thread outputRedirectingThread = new Thread(new OutputRedirector(process.getInputStream(), out), "output stream redirection thread");
-    outputRedirectingThread.start();
-
-    //Copy the content of in to the output stream
-    IOUtils.copy(source, process.getOutputStream());
-    process.getOutputStream().close();
-
-    try {
-      int result = process.waitFor();
-      outputRedirectingThread.join();
-      if (result != 0) {
-        throw new IOException("Conversion failed due to: " + IOUtils.toString(process.getErrorStream()));
-      }
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  public void run(@Nonnull File source, @Nullable OutputStream out, @Nonnull String... args) throws IOException {
-    List<String> commands = new ArrayList<>();
-    commands.add(bin.getAbsolutePath());
-    commands.addAll(Arrays.asList(args));
-    commands.add(source.getAbsolutePath());
-
-    ProcessBuilder builder = new ProcessBuilder(commands);
-
-    Process process = builder.start();
-
-    Thread outputRedirectingThread = null;
-    if (out != null) {
-      outputRedirectingThread = new Thread(new OutputRedirector(process.getInputStream(), out), "output stream redirection thread");
-      outputRedirectingThread.start();
-    }
-
-    try {
-      int result = process.waitFor();
-      if (outputRedirectingThread != null) {
-        outputRedirectingThread.join();
-      }
-      if (result != 0) {
-        throw new IOException("Failed due to: " + IOUtils.toString(process.getErrorStream()));
-      }
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
   public void clearRotation(@Nonnull File target) throws IOException {
-    run(target, null, "-P", "-overwrite_original", "-Orientation=normal");
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    run(null, out, "-P", "-overwrite_original", "-Orientation=normal", target.getAbsolutePath());
   }
 }

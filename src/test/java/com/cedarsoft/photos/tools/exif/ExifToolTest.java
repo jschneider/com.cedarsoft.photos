@@ -60,7 +60,7 @@ public class ExifToolTest {
 
     {
       OutputStream out = new ByteArrayOutputStream();
-      exifTool.run(file, out, "-Orientation", "-S");
+      exifTool.run(null, out, "-Orientation", "-S", file.getAbsolutePath());
       assertEquals("Orientation: Rotate 270 CW", out.toString().trim());
     }
 
@@ -68,7 +68,7 @@ public class ExifToolTest {
 
     {
       OutputStream out = new ByteArrayOutputStream();
-      exifTool.run(file, out, "-Orientation", "-S");
+      exifTool.run(null, out, "-Orientation", "-S", file.getAbsolutePath());
       assertEquals("Orientation: Horizontal (normal)", out.toString().trim());
     }
   }
