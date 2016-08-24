@@ -32,7 +32,6 @@ public class ImageStorage {
   @NonUiThread
   File getDataFile(@Nonnull Hash hash) throws IOException {
     File dir = getDir(SplitHash.split(hash));
-    ensureDirectoryExists(dir);
     return new File(dir, DATA_FILE_NAME);
   }
 
@@ -74,15 +73,22 @@ public class ImageStorage {
    * Returns the dir for the first part
    */
   @Nonnull
-  private File getFirstPartDeletedDir(@Nonnull String firstPart) {
+  private File getDeletedFirstPartDir(@Nonnull String firstPart) {
     return new File(deletedBaseDir, firstPart);
   }
 
   @NonUiThread
   @Nonnull
   private File getDeletedDir(@Nonnull SplitHash splitHash) {
-    File firstPartDir = getFirstPartDeletedDir(splitHash.getFirstPart());
+    File firstPartDir = getDeletedFirstPartDir(splitHash.getFirstPart());
     return new File(firstPartDir, splitHash.getLeftover());
+  }
+
+  @Nonnull
+  @NonUiThread
+  File getDeletedDataFile(@Nonnull Hash hash) throws IOException {
+    File dir = getDeletedDir(SplitHash.split(hash));
+    return new File(dir, DATA_FILE_NAME);
   }
 
   public void delete(@Nonnull Hash hash) throws IOException {
@@ -94,7 +100,7 @@ public class ImageStorage {
     FileUtils.moveDirectory(dirToDelete, targetDir);
   }
 
-  private static void ensureDirectoryExists(@Nonnull File dir) throws IOException {
+  public static void ensureDirectoryExists(@Nonnull File dir) throws IOException {
     if (!dir.isDirectory()) {
       if (!dir.mkdirs()) {
         throw new IOException("Could not create directory <" + dir.getAbsolutePath() + ">");

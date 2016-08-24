@@ -13,9 +13,7 @@ import javax.inject.Inject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Set;
-import java.util.logging.Logger;
 
 /**
  * Imports photos from a given directory.
@@ -51,6 +49,7 @@ public class Importer {
     }
 
     File dir = targetFile.getParentFile();
+    ImageStorage.ensureDirectoryExists(dir);
 
     //Set writable before
     dir.setWritable(true, true);

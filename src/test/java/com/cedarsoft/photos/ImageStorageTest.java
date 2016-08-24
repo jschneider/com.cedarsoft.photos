@@ -3,10 +3,12 @@ package com.cedarsoft.photos;
 import com.cedarsoft.crypt.Algorithm;
 import com.cedarsoft.crypt.Hash;
 import com.cedarsoft.crypt.HashCalculator;
+import com.google.common.io.Files;
 import org.junit.*;
 import org.junit.rules.*;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,9 +23,33 @@ public class ImageStorageTest {
 
   @Before
   public void setUp() throws Exception {
-    imageStorage = new ImageStorage(tmp.newFolder(), deletedBaseDir);
+    imageStorage = new ImageStorage(tmp.newFolder(), tmp.newFolder());
     hash = HashCalculator.calculate(Algorithm.SHA1, "thecontent");
     assertThat(hash.getValueAsHex()).isEqualTo("d958566e96bc10f33f4209fbc2ed05f9096ef9a0");
+  }
+
+  @Test
+  public void delete() throws Exception {
+    assertThat(imageStorage.getDir(hash)).doesNotExist();
+    assertThat(imageStorage.getDeletedDataFile(hash)).doesNotExist();
+
+    File file = imageStorage.getDataFile(hash);
+    assertThat(imageStorage.getDir(hash)).doesNotExist();
+
+
+    //Create the directory
+    ImageStorage.ensureDirectoryExists(imageStorage.getDir(hash));
+    assertThat(imageStorage.getDir(hash)).exists();
+
+    //Write the file
+    Files.write("daContent", file, StandardCharsets.UTF_8);
+
+    imageStorage.delete(hash);
+    assertThat(imageStorage.getDir(hash)).doesNotExist();
+    assertThat(imageStorage.getDataFile(hash)).doesNotExist();
+
+    assertThat(imageStorage.getDeletedDataFile(hash)).exists();
+    assertThat(Files.readFirstLine(imageStorage.getDeletedDataFile(hash), StandardCharsets.UTF_8)).isEqualTo("daContent");
   }
 
   @Test
