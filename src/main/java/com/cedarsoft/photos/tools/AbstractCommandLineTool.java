@@ -29,7 +29,7 @@ public abstract class AbstractCommandLineTool {
     this.bin = bin;
   }
 
-  public void run(@Nullable InputStream in, @Nonnull OutputStream out, @Nonnull String... args) throws IOException {
+  public void run(@Nullable InputStream in, @Nullable OutputStream out, @Nonnull String... args) throws IOException {
     List<String> commands = new ArrayList<>();
     commands.add(bin.getAbsolutePath());
     commands.addAll(Arrays.asList(args));
@@ -37,8 +37,11 @@ public abstract class AbstractCommandLineTool {
     ProcessBuilder builder = new ProcessBuilder(commands);
     Process process = builder.start();
 
-    Thread outputRedirectingThread = new Thread(new OutputRedirector(process.getInputStream(), out), "output stream redirection thread");
-    outputRedirectingThread.start();
+    @Nullable Thread outputRedirectingThread = null;
+    if (out != null) {
+      outputRedirectingThread = new Thread(new OutputRedirector(process.getInputStream(), out), "output stream redirection thread");
+      outputRedirectingThread.start();
+    }
 
     if (in != null) {
       //Copy the content of in to the input stream
@@ -48,7 +51,9 @@ public abstract class AbstractCommandLineTool {
 
     try {
       int result = process.waitFor();
-      outputRedirectingThread.join();
+      if (outputRedirectingThread != null) {
+        outputRedirectingThread.join();
+      }
       if (result != 0) {
         throw new IOException("Conversion failed due to: " + IOUtils.toString(process.getErrorStream()));
       }
