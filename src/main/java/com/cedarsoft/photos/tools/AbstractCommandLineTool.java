@@ -29,6 +29,10 @@ public abstract class AbstractCommandLineTool {
     this.bin = bin;
   }
 
+  public void run(@Nonnull String... args) throws IOException {
+    run(null, null, args);
+  }
+
   public void run(@Nullable InputStream in, @Nullable OutputStream out, @Nonnull String... args) throws IOException {
     List<String> commands = new ArrayList<>();
     commands.add(bin.getAbsolutePath());

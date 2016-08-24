@@ -28,20 +28,11 @@
 
 package com.cedarsoft.photos.tools.exif;
 
-import com.cedarsoft.execution.OutputRedirector;
 import com.cedarsoft.photos.tools.AbstractCommandLineTool;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Wrapper for exiftool
@@ -58,7 +49,6 @@ public class ExifTool extends AbstractCommandLineTool {
   }
 
   public void clearRotation(@Nonnull File target) throws IOException {
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-    run(null, out, "-P", "-overwrite_original", "-Orientation=normal", target.getAbsolutePath());
+    run("-P", "-overwrite_original", "-Orientation=normal", target.getAbsolutePath());
   }
 }
