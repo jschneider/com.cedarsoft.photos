@@ -1,9 +1,10 @@
 package com.cedarsoft.photos;
 
-import com.cedarsoft.image.Resolution;
 import com.cedarsoft.photos.di.Modules;
 import com.cedarsoft.photos.exif.ExifExtractor;
 import com.cedarsoft.photos.exif.ExifInfo;
+import com.cedarsoft.photos.imagemagick.Identify;
+import com.cedarsoft.photos.imagemagick.ImageInformation;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -20,24 +21,38 @@ public class FindSmallImagesRunner {
     Injector injector = Guice.createInjector(Modules.getModules());
 
     ImageFinder imageFinder = injector.getInstance(ImageFinder.class);
+    Identify identify = injector.getInstance(Identify.class);
     ExifExtractor exifExtractor = injector.getInstance(ExifExtractor.class);
 
     imageFinder.find((storage, dataFile) -> {
-      System.out.println("\t\t" + dataFile.getAbsolutePath());
-      ExifInfo exifInfo = exifExtractor.extractInfo(dataFile);
-      Resolution dimension = exifInfo.getDimension();
+      try {
+        System.out.print(".");
 
-      if ((dimension.getWidth() <= 2000) && (dimension.getHeight() <= 2000)) {
-        System.out.println("--> Small image found: <" + dataFile.getAbsolutePath() + "> (" + dimension + ")");
-        File dir = dataFile.getParentFile();
-        dir.setWritable(true);
-        dataFile.setWritable(true);
-        boolean deleted = dataFile.delete();
-        if (!deleted) {
-          throw new IOException("Could not delete <" + dataFile.getAbsolutePath() + ">");
+        ExifInfo exifInfo = exifExtractor.extractInfo(dataFile);
+        if (LinkByDateCreator.isRaw(exifInfo.getFileTypeExtension())) {
+          return;
         }
-        //Delete the parent dir
-        dir.delete();
+
+        ImageInformation imageInformation = identify.getImageInformation(dataFile);
+        if ((imageInformation.getResolution().getWidth() < 2000) && (imageInformation.getResolution().getHeight() < 2000)) {
+          System.out.println("\n--> Small Image");
+
+          if (false) {
+            File dir = dataFile.getParentFile();
+            dir.setWritable(true);
+            dataFile.setWritable(true);
+            boolean deleted = dataFile.delete();
+            if (!deleted) {
+              throw new IOException("Could not delete <" + dataFile.getAbsolutePath() + ">");
+            }
+            //Delete the parent dir
+            dir.delete();
+          }
+        }
+      } catch (Exception e) {
+        System.err.println("Problem when checking " + dataFile.getAbsolutePath());
+        e.printStackTrace();
+        System.exit(1);
       }
     });
   }

@@ -1,8 +1,6 @@
 package com.cedarsoft.photos.imagemagick;
 
 import com.cedarsoft.image.Resolution;
-import com.cedarsoft.photos.exif.ExifTool;
-import org.assertj.core.api.Assertions;
 import org.junit.*;
 
 import javax.annotation.Nonnull;
@@ -23,7 +21,7 @@ public class IdentifyDemo {
     identify.run(out, "/media/mule/data/media/photos/backend/5e/f17e82c55be6077735e6c968cfdc107967b8c6ec9a3b512c8af36430728afe/data");
     assertThat(out.toString()).isEqualTo("/media/mule/data/media/photos/backend/5e/f17e82c55be6077735e6c968cfdc107967b8c6ec9a3b512c8af36430728afe/data JPEG 2048x1536 2048x1536+0+0 8-bit sRGB 1.595MB 0.000u 0:00.000\n");
 
-    ImageInformation information = identify.getIdentify(new File("/media/mule/data/media/photos/backend/5e/f17e82c55be6077735e6c968cfdc107967b8c6ec9a3b512c8af36430728afe/data"));
+    ImageInformation information = identify.getImageInformation(new File("/media/mule/data/media/photos/backend/5e/f17e82c55be6077735e6c968cfdc107967b8c6ec9a3b512c8af36430728afe/data"));
     assertThat(information.getType()).isEqualTo("JPEG");
     assertThat(information.getResolution()).isEqualTo(new Resolution(2048, 1536));
   }

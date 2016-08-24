@@ -114,7 +114,7 @@ public class LinkByDateCreator {
   }
 
   //TODO move
-  private static boolean isRaw(@Nonnull String extension) {
+  public static boolean isRaw(@Nonnull String extension) {
     return extension.equalsIgnoreCase("cr2");
   }
 

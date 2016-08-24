@@ -4,6 +4,7 @@ import com.cedarsoft.photos.ImageStorage;
 import com.cedarsoft.photos.LinkByDateCreator;
 import com.cedarsoft.photos.exif.ExifExtractor;
 import com.cedarsoft.photos.exif.ExifTool;
+import com.cedarsoft.photos.imagemagick.Identify;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 
@@ -30,6 +31,17 @@ public class StorageModule extends AbstractModule {
       throw new IllegalStateException("No exiftool installed.");
     }
     return new ExifTool(bin);
+  }
+
+  @Singleton
+  @Provides
+  @Nonnull
+  public Identify providesIdentify() {
+    File bin = new File("/usr/bin/identify");
+    if (!bin.exists()) {
+      throw new IllegalStateException("No identify installed.");
+    }
+    return new Identify(bin);
   }
 
   @Provides

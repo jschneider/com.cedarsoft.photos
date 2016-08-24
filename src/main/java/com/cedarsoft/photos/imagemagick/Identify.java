@@ -52,7 +52,7 @@ public class Identify {
     }
   }
 
-  public ImageInformation getIdentify(@Nonnull File file) throws IOException {
+  public ImageInformation getImageInformation(@Nonnull File file) throws IOException {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     run(out, file.getAbsolutePath());
 
