@@ -16,7 +16,7 @@ import java.io.IOException;
  *
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
-public class FindSmallImagesRunner {
+public class DeleteSmallImagesRunner {
   public static void main(String[] args) throws IOException {
     Injector injector = Guice.createInjector(Modules.getModules());
 
