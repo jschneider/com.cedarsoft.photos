@@ -40,6 +40,10 @@ public class ImageFinder {
       assert remainingPartHashDirs != null;
       for (File remainingPartHashDir : remainingPartHashDirs) {
         File dataFile = new File(remainingPartHashDir, ImageStorage.DATA_FILE_NAME);
+        if (!dataFile.exists()) {
+          LOG.warning("Missing data file: <" + dataFile.getAbsolutePath() + ">");
+          continue;
+        }
 
         Hash hash = Hash.fromHex(Algorithm.SHA1, firstPartHashDir.getName() + "" + remainingPartHashDir.getName());
         consumer.found(storage, dataFile, hash);
