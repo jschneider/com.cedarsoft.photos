@@ -46,7 +46,7 @@ public class ImageStorage {
   @NonUiThread
   @Nonnull
   private File getDir(@Nonnull SplitHash splitHash) throws IOException {
-    File firstPartDir = getDir(splitHash.getFirstPart());
+    File firstPartDir = getFirstPartDir(splitHash.getFirstPart());
     File dir = new File(firstPartDir, splitHash.getLeftover());
     if (!dir.isDirectory()) {
       if (!dir.mkdirs()) {
@@ -60,7 +60,7 @@ public class ImageStorage {
    * Returns the dir for the first part
    */
   @Nonnull
-  private File getDir(@Nonnull String firstPart) {
+  private File getFirstPartDir(@Nonnull String firstPart) {
     return new File(baseDir, firstPart);
   }
 
