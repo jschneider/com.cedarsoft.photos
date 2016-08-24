@@ -2,6 +2,7 @@ package com.cedarsoft.photos;
 
 import com.cedarsoft.annotations.NonUiThread;
 import com.cedarsoft.crypt.Hash;
+import org.apache.commons.io.FileUtils;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -31,6 +32,7 @@ public class ImageStorage {
   @NonUiThread
   File getDataFile(@Nonnull Hash hash) throws IOException {
     File dir = getDir(SplitHash.split(hash));
+    ensureDirectoryExists(dir);
     return new File(dir, DATA_FILE_NAME);
   }
 
@@ -45,15 +47,9 @@ public class ImageStorage {
 
   @NonUiThread
   @Nonnull
-  private File getDir(@Nonnull SplitHash splitHash) throws IOException {
+  private File getDir(@Nonnull SplitHash splitHash) {
     File firstPartDir = getFirstPartDir(splitHash.getFirstPart());
-    File dir = new File(firstPartDir, splitHash.getLeftover());
-    if (!dir.isDirectory()) {
-      if (!dir.mkdirs()) {
-        throw new IOException("Could not create directory <" + dir.getAbsolutePath() + ">");
-      }
-    }
-    return dir;
+    return new File(firstPartDir, splitHash.getLeftover());
   }
 
   /**
@@ -68,4 +64,42 @@ public class ImageStorage {
   public File getBaseDir() {
     return baseDir;
   }
+
+  @Nonnull
+  public File getDeletedBaseDir() {
+    return deletedBaseDir;
+  }
+
+  /**
+   * Returns the dir for the first part
+   */
+  @Nonnull
+  private File getFirstPartDeletedDir(@Nonnull String firstPart) {
+    return new File(deletedBaseDir, firstPart);
+  }
+
+  @NonUiThread
+  @Nonnull
+  private File getDeletedDir(@Nonnull SplitHash splitHash) {
+    File firstPartDir = getFirstPartDeletedDir(splitHash.getFirstPart());
+    return new File(firstPartDir, splitHash.getLeftover());
+  }
+
+  public void delete(@Nonnull Hash hash) throws IOException {
+    SplitHash splitHash = SplitHash.split(hash);
+    File targetDir = getDeletedDir(splitHash);
+
+    //Now move the original directory
+    File dirToDelete = getDir(splitHash);
+    FileUtils.moveDirectory(dirToDelete, targetDir);
+  }
+
+  private static void ensureDirectoryExists(@Nonnull File dir) throws IOException {
+    if (!dir.isDirectory()) {
+      if (!dir.mkdirs()) {
+        throw new IOException("Could not create directory <" + dir.getAbsolutePath() + ">");
+      }
+    }
+  }
+
 }

@@ -47,16 +47,7 @@ public class DeleteSmallImagesRunner {
         if ((imageInformation.getResolution().getWidth() < 2000) && (imageInformation.getResolution().getHeight() < 2000)) {
           System.out.println("\n--> Small Image");
 
-          if (false) {
-            dir.setWritable(true);
-            dataFile.setWritable(true);
-            boolean deleted = dataFile.delete();
-            if (!deleted) {
-              throw new IOException("Could not delete <" + dataFile.getAbsolutePath() + ">");
-            }
-            //Delete the parent dir
-            dir.delete();
-          }
+          storage.delete(hash);
         }
       } catch (Exception e) {
         System.err.println("Problem when checking " + dataFile.getAbsolutePath());
