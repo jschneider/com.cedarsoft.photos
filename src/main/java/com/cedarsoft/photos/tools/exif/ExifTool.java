@@ -26,7 +26,7 @@
  * have any questions.
  */
 
-package com.cedarsoft.photos.exif;
+package com.cedarsoft.photos.tools.exif;
 
 import com.cedarsoft.execution.OutputRedirector;
 import org.apache.commons.io.IOUtils;

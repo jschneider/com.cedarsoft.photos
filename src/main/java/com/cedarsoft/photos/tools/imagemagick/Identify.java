@@ -1,13 +1,11 @@
-package com.cedarsoft.photos.imagemagick;
+package com.cedarsoft.photos.tools.imagemagick;
 
 import com.cedarsoft.execution.OutputRedirector;
-import com.cedarsoft.image.Resolution;
 import com.google.common.base.Splitter;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
 import javax.annotation.Nonnull;
-import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;

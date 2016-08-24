@@ -1,10 +1,10 @@
 package com.cedarsoft.photos;
 
 import com.cedarsoft.photos.di.Modules;
-import com.cedarsoft.photos.exif.ExifExtractor;
-import com.cedarsoft.photos.exif.ExifInfo;
-import com.cedarsoft.photos.imagemagick.Identify;
-import com.cedarsoft.photos.imagemagick.ImageInformation;
+import com.cedarsoft.photos.tools.exif.ExifExtractor;
+import com.cedarsoft.photos.tools.exif.ExifInfo;
+import com.cedarsoft.photos.tools.imagemagick.Identify;
+import com.cedarsoft.photos.tools.imagemagick.ImageInformation;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 

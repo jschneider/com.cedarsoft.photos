@@ -2,8 +2,8 @@ package com.cedarsoft.photos;
 
 import com.cedarsoft.exceptions.NotFoundException;
 import com.cedarsoft.io.LinkUtils;
-import com.cedarsoft.photos.exif.ExifExtractor;
-import com.cedarsoft.photos.exif.ExifInfo;
+import com.cedarsoft.photos.tools.exif.ExifExtractor;
+import com.cedarsoft.photos.tools.exif.ExifInfo;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

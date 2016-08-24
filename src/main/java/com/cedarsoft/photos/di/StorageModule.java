@@ -2,9 +2,9 @@ package com.cedarsoft.photos.di;
 
 import com.cedarsoft.photos.ImageStorage;
 import com.cedarsoft.photos.LinkByDateCreator;
-import com.cedarsoft.photos.exif.ExifExtractor;
-import com.cedarsoft.photos.exif.ExifTool;
-import com.cedarsoft.photos.imagemagick.Identify;
+import com.cedarsoft.photos.tools.exif.ExifExtractor;
+import com.cedarsoft.photos.tools.exif.ExifTool;
+import com.cedarsoft.photos.tools.imagemagick.Identify;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 

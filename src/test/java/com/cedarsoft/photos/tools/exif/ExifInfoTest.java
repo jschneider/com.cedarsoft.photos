@@ -26,9 +26,8 @@
  * have any questions.
  */
 
-package com.cedarsoft.photos.exif;
+package com.cedarsoft.photos.tools.exif;
 
-import org.assertj.core.api.Assertions;
 import org.junit.*;
 
 import java.io.IOException;
@@ -36,7 +35,6 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;

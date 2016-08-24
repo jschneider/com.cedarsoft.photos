@@ -1,4 +1,4 @@
-package com.cedarsoft.photos.imagemagick;
+package com.cedarsoft.photos.tools.imagemagick;
 
 import com.cedarsoft.image.Resolution;
 
