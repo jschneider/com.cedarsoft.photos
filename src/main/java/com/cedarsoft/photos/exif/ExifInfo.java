@@ -422,13 +422,11 @@ public class ExifInfo {
       int id;
 
       String idAsString = parts.next();
-      if (idAsString.equals("-")) {
+      try {
+        id = Integer.parseInt(idAsString);
+      } catch (NumberFormatException ignore) {
         id = -1;
       }
-      else {
-        id = Integer.parseInt(idAsString);
-      }
-
 
       String key = parts.next();
       String value = null;
