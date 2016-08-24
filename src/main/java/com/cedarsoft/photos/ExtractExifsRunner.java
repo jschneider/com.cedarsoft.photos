@@ -1,5 +1,6 @@
 package com.cedarsoft.photos;
 
+import com.cedarsoft.crypt.Hash;
 import com.cedarsoft.photos.di.Modules;
 import com.cedarsoft.photos.tools.exif.ExifExtractor;
 import com.google.inject.Guice;
@@ -21,7 +22,7 @@ public class ExtractExifsRunner {
     ExifExtractor exifExtractor = injector.getInstance(ExifExtractor.class);
 
     ImageFinder imageFinder = injector.getInstance(ImageFinder.class);
-    imageFinder.find((storage, dataFile) -> {
+    imageFinder.find((storage, dataFile, hash) -> {
       System.out.println("\t\tExtracting exif for " + dataFile);
       File dir = dataFile.getParentFile();
       File exifFile = new File(dir, "exif");

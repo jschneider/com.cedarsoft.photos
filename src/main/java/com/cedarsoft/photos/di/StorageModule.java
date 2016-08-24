@@ -19,7 +19,8 @@ public class StorageModule extends AbstractModule {
   @Override
   protected void configure() {
     File storageBaseDir = new File("/media/mule/data/media/photos/backend");
-    bind(ImageStorage.class).toInstance(new ImageStorage(storageBaseDir));
+    File deletedBaseDir = new File("/media/mule/data/media/photos/deleted");
+    bind(ImageStorage.class).toInstance(new ImageStorage(storageBaseDir, deletedBaseDir));
   }
 
   @Singleton

@@ -15,9 +15,12 @@ public class ImageStorage {
   public static final String DATA_FILE_NAME = "data";
   @Nonnull
   private final File baseDir;
+  @Nonnull
+  private final File deletedBaseDir;
 
-  public ImageStorage(@Nonnull File baseDir) {
+  public ImageStorage(@Nonnull File baseDir, @Nonnull File deletedBaseDir) {
     this.baseDir = baseDir;
+    this.deletedBaseDir = deletedBaseDir;
 
     if (!baseDir.isDirectory()) {
       throw new IllegalArgumentException("Base dir does not exist <" + baseDir.getAbsolutePath() + ">");

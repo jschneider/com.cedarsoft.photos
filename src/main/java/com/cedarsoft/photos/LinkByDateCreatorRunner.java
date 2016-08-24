@@ -2,12 +2,9 @@ package com.cedarsoft.photos;
 
 import com.cedarsoft.exceptions.NotFoundException;
 import com.cedarsoft.photos.di.Modules;
-import com.cedarsoft.photos.di.StorageModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 
@@ -22,7 +19,7 @@ public class LinkByDateCreatorRunner {
     LinkByDateCreator linkByDateCreator = injector.getInstance(LinkByDateCreator.class);
 
     ImageFinder imageFinder = injector.getInstance(ImageFinder.class);
-    imageFinder.find((storage, dataFile) -> {
+    imageFinder.find((storage, dataFile, hash) -> {
       try {
         System.out.println("\t\tCreating links for " + dataFile);
         File link = linkByDateCreator.createLink(dataFile);

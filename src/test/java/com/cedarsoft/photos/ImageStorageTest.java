@@ -21,7 +21,7 @@ public class ImageStorageTest {
 
   @Before
   public void setUp() throws Exception {
-    imageStorage = new ImageStorage(tmp.newFolder());
+    imageStorage = new ImageStorage(tmp.newFolder(), deletedBaseDir);
     hash = HashCalculator.calculate(Algorithm.SHA1, "thecontent");
     assertThat(hash.getValueAsHex()).isEqualTo("d958566e96bc10f33f4209fbc2ed05f9096ef9a0");
   }

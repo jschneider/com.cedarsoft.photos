@@ -1,6 +1,8 @@
 package com.cedarsoft.photos;
 
 import com.cedarsoft.annotations.NonUiThread;
+import com.cedarsoft.crypt.Algorithm;
+import com.cedarsoft.crypt.Hash;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -39,7 +41,8 @@ public class ImageFinder {
       for (File remainingPartHashDir : remainingPartHashDirs) {
         File dataFile = new File(remainingPartHashDir, ImageStorage.DATA_FILE_NAME);
 
-        consumer.found(storage, dataFile);
+        Hash hash = Hash.fromHex(Algorithm.SHA1, firstPartHashDir.getName() + "" + remainingPartHashDir.getName());
+        consumer.found(storage, dataFile, hash);
       }
     }
   }
@@ -53,6 +56,6 @@ public class ImageFinder {
      * Is called for each data file that has been found
      */
     @NonUiThread
-    void found(@Nonnull ImageStorage storage, @Nonnull File dataFile) throws IOException;
+    void found(@Nonnull ImageStorage storage, @Nonnull File dataFile, @Nonnull Hash hash) throws IOException;
   }
 }
