@@ -7,6 +7,7 @@ import com.cedarsoft.photos.exif.ExifInfo;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -26,8 +27,17 @@ public class FindSmallImagesRunner {
       ExifInfo exifInfo = exifExtractor.extractInfo(dataFile);
       Resolution dimension = exifInfo.getDimension();
 
-      if ((dimension.getWidth() < 1000) || (dimension.getHeight() < 1000)) {
+      if ((dimension.getWidth() <= 2000) && (dimension.getHeight() <= 2000)) {
         System.out.println("--> Small image found: <" + dataFile.getAbsolutePath() + "> (" + dimension + ")");
+        File dir = dataFile.getParentFile();
+        dir.setWritable(true);
+        dataFile.setWritable(true);
+        boolean deleted = dataFile.delete();
+        if (!deleted) {
+          throw new IOException("Could not delete <" + dataFile.getAbsolutePath() + ">");
+        }
+        //Delete the parent dir
+        dir.delete();
       }
     });
   }
