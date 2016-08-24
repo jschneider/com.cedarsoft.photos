@@ -1,7 +1,7 @@
 package com.cedarsoft.photos;
 
+import com.cedarsoft.crypt.Hash;
 import com.cedarsoft.photos.di.Modules;
-import com.cedarsoft.photos.tools.exif.ExifExtractor;
 import com.cedarsoft.photos.tools.exif.ExifInfo;
 import com.cedarsoft.photos.tools.imagemagick.Identify;
 import com.cedarsoft.photos.tools.imagemagick.ImageInformation;
@@ -9,6 +9,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
@@ -22,13 +23,22 @@ public class DeleteSmallImagesRunner {
 
     ImageFinder imageFinder = injector.getInstance(ImageFinder.class);
     Identify identify = injector.getInstance(Identify.class);
-    ExifExtractor exifExtractor = injector.getInstance(ExifExtractor.class);
 
-    imageFinder.find((storage, dataFile) -> {
+    imageFinder.find((storage, dataFile, hash) -> {
       try {
         System.out.print(".");
 
-        ExifInfo exifInfo = exifExtractor.extractInfo(dataFile);
+        File dir = dataFile.getParentFile();
+        File exifFile = new File(dir, "exif");
+        if (!exifFile.exists()) {
+          System.out.println("Skipping - no exif file found: " + exifFile.getAbsolutePath());
+          return;
+        }
+
+        ExifInfo exifInfo;
+        try (FileInputStream in = new FileInputStream(exifFile)) {
+          exifInfo = new ExifInfo(in);
+        }
         if (LinkByDateCreator.isRaw(exifInfo.getFileTypeExtension())) {
           return;
         }
@@ -38,7 +48,6 @@ public class DeleteSmallImagesRunner {
           System.out.println("\n--> Small Image");
 
           if (false) {
-            File dir = dataFile.getParentFile();
             dir.setWritable(true);
             dataFile.setWritable(true);
             boolean deleted = dataFile.delete();
