@@ -1,58 +1,26 @@
 package com.cedarsoft.photos.tools.imagemagick;
 
-import com.cedarsoft.execution.OutputRedirector;
+import com.cedarsoft.photos.tools.AbstractCommandLineTool;
 import com.google.common.base.Splitter;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
-public class Identify {
-  @Nonnull
-  private final File bin;
-
+public class Identify extends AbstractCommandLineTool {
   public Identify(@Nonnull File bin) {
-    if (!bin.exists()) {
-      throw new IllegalArgumentException("bin does not exist " + bin.getAbsolutePath());
-    }
-    this.bin = bin;
-  }
-
-  public void run(@Nonnull OutputStream out, @Nonnull String... args) throws IOException {
-    List<String> commands = new ArrayList<>();
-    commands.add(bin.getAbsolutePath());
-    commands.addAll(Arrays.asList(args));
-
-    ProcessBuilder builder = new ProcessBuilder(commands);
-    Process process = builder.start();
-
-    Thread outputRedirectingThread = new Thread(new OutputRedirector(process.getInputStream(), out), "output stream redirection thread");
-    outputRedirectingThread.start();
-
-    try {
-      int result = process.waitFor();
-      outputRedirectingThread.join();
-      if (result != 0) {
-        throw new IOException("Conversion failed due to: " + IOUtils.toString(process.getErrorStream()));
-      }
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
-    }
+    super(bin);
   }
 
   public ImageInformation getImageInformation(@Nonnull File file) throws IOException {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
-    run(out, file.getAbsolutePath());
+    run(null, out, file.getAbsolutePath());
 
     String output = out.toString(StandardCharsets.UTF_8);
     List<String> parts = Splitter.on(' ').splitToList(output);
