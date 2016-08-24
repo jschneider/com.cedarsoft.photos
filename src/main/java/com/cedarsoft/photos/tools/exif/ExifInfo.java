@@ -26,9 +26,10 @@
  * have any questions.
  */
 
-package com.cedarsoft.photos.exif;
+package com.cedarsoft.photos.tools.exif;
 
 import com.cedarsoft.exceptions.NotFoundException;
+import com.cedarsoft.image.Resolution;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.io.IOUtils;
@@ -100,6 +101,20 @@ public class ExifInfo {
     //noinspection ReturnOfCollectionOrArrayField
     return entries;
   }
+
+  /**
+   * Returns null if there is no capture time in the exif data
+   */
+  @Nullable
+  public ZonedDateTime getCaptureTimeNullable(@Nonnull ZoneId fallbackCaptureZoneId) {
+    try {
+      return getCaptureTime(fallbackCaptureZoneId);
+    } catch (NotFoundException ignore) {
+    }
+
+    return null;
+  }
+
 
   /**
    * Returns the capture time.
@@ -207,9 +222,40 @@ public class ExifInfo {
     return String.valueOf(findEntry("FileTypeExtension").getValue());
   }
 
+  /**
+   * Returns a camera identifier (as specific as possible)
+   */
+  @Nonnull
+  public String getCameraId() {
+    try {
+      return String.valueOf(getCameraSerial());
+    } catch (NotFoundException ignore) {
+    }
+
+    //Fallback if there is no serial number
+    return getCameraInfo().getModel().replace(" ", "_");
+  }
+
   public long getCameraSerial() throws NotFoundException {
     Object value = findEntry("SerialNumber").getValueNonNull();
     return Long.valueOf(String.valueOf(value));
+  }
+
+  public long getCameraSerialSafe() {
+    try {
+      return getCameraSerial();
+    } catch (NotFoundException ignore) {
+      return -1;
+    }
+  }
+
+  @Nonnull
+  public String getInternalSerialSafe() {
+    try {
+      return getInternalSerial();
+    } catch (NotFoundException ignore) {
+      return "";
+    }
   }
 
   @Nonnull
@@ -252,7 +298,7 @@ public class ExifInfo {
    */
   @Nonnull
   public CameraInfo getCameraInfo() throws NotFoundException {
-    return new CameraInfo(getCameraSerial(), getMake(), getModel(), getInternalSerial());
+    return new CameraInfo(getCameraSerialSafe(), getMake(), getModel(), getInternalSerialSafe());
   }
 
   public double getMaxAperture() throws NotFoundException {
@@ -297,7 +343,14 @@ public class ExifInfo {
   }
 
   @Nonnull
+  public Resolution getDimension() {
+    int width = Integer.parseInt(String.valueOf(findEntry("ImageWidth").getValueNonNull()));
+    int height = Integer.parseInt(String.valueOf(findEntry("ImageHeight").getValueNonNull()));
 
+    return new Resolution(width, height);
+  }
+
+  @Nonnull
   public String getOrientation() {
     return String.valueOf(findEntry("Orientation").getValueNonNull());
   }
@@ -308,6 +361,7 @@ public class ExifInfo {
       "entries=" + entries +
       '}';
   }
+
   //  public int getHyperfocalDistance() {
   //    return findEntry( "HyperfocalDistance" );
   //  }
@@ -368,13 +422,11 @@ public class ExifInfo {
       int id;
 
       String idAsString = parts.next();
-      if (idAsString.equals("-")) {
+      try {
+        id = Integer.parseInt(idAsString);
+      } catch (NumberFormatException ignore) {
         id = -1;
       }
-      else {
-        id = Integer.parseInt(idAsString);
-      }
-
 
       String key = parts.next();
       String value = null;

@@ -26,7 +26,7 @@
  * have any questions.
  */
 
-package com.cedarsoft.photos.exif;
+package com.cedarsoft.photos.tools.exif;
 
 
 import javax.annotation.Nonnull;

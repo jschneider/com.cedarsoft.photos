@@ -1,10 +1,12 @@
 package com.cedarsoft.photos;
 
+import com.cedarsoft.exceptions.NotFoundException;
 import com.cedarsoft.photos.di.Modules;
 import com.cedarsoft.photos.di.StorageModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
@@ -19,24 +21,16 @@ public class LinkByDateCreatorRunner {
     Injector injector = Guice.createInjector(Modules.getModules());
     LinkByDateCreator linkByDateCreator = injector.getInstance(LinkByDateCreator.class);
 
-    ImageStorage storage = injector.getInstance(ImageStorage.class);
-
-    //link all files
-    @Nullable File[] firstPartHashDirs = storage.getBaseDir().listFiles();
-    assert firstPartHashDirs != null;
-    for (File firstPartHashDir : firstPartHashDirs) {
-      if (!firstPartHashDir.isDirectory()) {
-        continue;
+    ImageFinder imageFinder = injector.getInstance(ImageFinder.class);
+    imageFinder.find((storage, dataFile) -> {
+      try {
+        System.out.println("\t\tCreating links for " + dataFile);
+        File link = linkByDateCreator.createLink(dataFile);
+        System.out.println("--> " + link.getAbsolutePath());
+      } catch (NotFoundException e) {
+        e.printStackTrace();
+        System.exit(1);
       }
-
-      File[] remainingPartHashDirs = firstPartHashDir.listFiles();
-      assert remainingPartHashDirs != null;
-      for (File remainingPartHashDir : remainingPartHashDirs) {
-        System.out.println("Creating link for <" + remainingPartHashDir + ">");
-
-        File dataFile = new File(remainingPartHashDir, ImageStorage.DATA_FILE_NAME);
-        linkByDateCreator.createLink(dataFile);
-      }
-    }
+    });
   }
 }

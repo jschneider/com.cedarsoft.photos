@@ -26,59 +26,49 @@
  * have any questions.
  */
 
-package com.cedarsoft.photos.exif;
+package com.cedarsoft.photos.tools.exif;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.*;
 import org.junit.rules.*;
 
 import javax.annotation.Nonnull;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
+import java.net.URL;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
  */
-public class ExifToolTest {
+public class ExifExtracterTest {
+  private InputStream source;
+  private URL sourceUrl;
+
   @Rule
   public TemporaryFolder tmp = new TemporaryFolder();
 
-  @Test
-  public void testClearRotation() throws IOException {
-    ExifTool exifTool = createExifTool();
-
-    File file = tmp.newFile("ExifToolTest_testClearRotation.jpg");
-
-    try (FileOutputStream fos = new FileOutputStream(file)) {
-      IOUtils.copy(getClass().getResourceAsStream("/img1.jpg"), fos);
-    }
-
-    {
-      OutputStream out = new ByteArrayOutputStream();
-      exifTool.run(file, out, "-Orientation", "-S");
-      assertEquals("Orientation: Rotate 270 CW", out.toString().trim());
-    }
-
-    exifTool.clearRotation(file);
-
-    {
-      OutputStream out = new ByteArrayOutputStream();
-      exifTool.run(file, out, "-Orientation", "-S");
-      assertEquals("Orientation: Horizontal (normal)", out.toString().trim());
-    }
+  @Before
+  public void setUp() throws Exception {
+    sourceUrl = getClass().getResource("/img1.jpg");
+    source = sourceUrl.openStream();
+    assert source != null;
   }
 
   @Nonnull
-  public static ExifTool createExifTool() {
-    File bin = new File("/usr/bin/exiftool");
-    if (!bin.exists()) {
-      throw new AssertionError("No exiftool installed.");
-    }
-    return new ExifTool(bin);
+  public static ExifExtractor create() {
+    return new ExifExtractor(ExifToolTest.createExifTool());
+  }
+
+  @Test
+  public void testIt() throws Exception {
+    ExifExtractor extractor = create();
+
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    extractor.extractDetailed(source, out);
+
+    String content = new String(out.toByteArray());
+
+    assertThat(content).contains("272\tModel\tCanon EOS 7D");
   }
 }

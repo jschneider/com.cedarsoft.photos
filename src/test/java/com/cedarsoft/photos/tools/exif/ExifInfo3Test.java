@@ -26,9 +26,8 @@
  * have any questions.
  */
 
-package com.cedarsoft.photos.exif;
+package com.cedarsoft.photos.tools.exif;
 
-import com.cedarsoft.exceptions.NotFoundException;
 import org.junit.*;
 
 import java.io.IOException;
