@@ -2,7 +2,6 @@ package com.cedarsoft.photos.tools.imagemagick;
 
 import com.cedarsoft.annotations.NonUiThread;
 import com.cedarsoft.image.Resolution;
-import com.cedarsoft.photos.tools.AbstractCommandLineTool;
 import com.google.common.base.Joiner;
 import org.im4java.core.CommandException;
 import org.im4java.core.ConvertCmd;
@@ -23,11 +22,7 @@ import java.io.OutputStream;
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
-public class Convert extends AbstractCommandLineTool {
-  public Convert(@Nonnull File bin) {
-    super(bin);
-  }
-
+public class Convert {
   /**
    * Creates a thumbnail
    */
