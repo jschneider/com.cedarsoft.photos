@@ -18,6 +18,7 @@ public class Identify extends AbstractCommandLineTool {
     super(bin);
   }
 
+  @Nonnull
   public ImageInformation getImageInformation(@Nonnull File file) throws IOException {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     run(null, out, file.getAbsolutePath());
