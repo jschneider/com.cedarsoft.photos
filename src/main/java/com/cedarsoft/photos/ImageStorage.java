@@ -101,6 +101,7 @@ public class ImageStorage {
 
     //Now move the original directory
     File dirToDelete = getDir(splitHash);
+    dirToDelete.setWritable(true);
     FileUtils.moveDirectory(dirToDelete, targetDir);
   }
 
