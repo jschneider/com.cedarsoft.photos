@@ -2,6 +2,7 @@ package com.cedarsoft.photos.tools.imagemagick;
 
 import com.cedarsoft.annotations.NonUiThread;
 import com.cedarsoft.image.Resolution;
+import com.cedarsoft.io.FileOutputStreamWithMove;
 import com.google.common.base.Joiner;
 import org.im4java.core.CommandException;
 import org.im4java.core.ConvertCmd;
@@ -14,7 +15,6 @@ import org.im4java.process.Pipe;
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -27,14 +27,10 @@ public class Convert {
    * Creates a thumbnail
    */
   @NonUiThread
-  public void createThumbnail(@Nonnull File imageFile, @Nonnull File targetFile, @Nonnull Resolution maxResolution) throws IOException {
-    try (FileInputStream in = new FileInputStream(imageFile); FileOutputStream out = new FileOutputStream(targetFile)) {
-      createThumbnail(in, out, maxResolution.getWidth(), maxResolution.getHeight());
+  public void createThumbnail(@Nonnull File imageFile, @Nonnull File targetFile, @Nonnull Resolution maxResolution, @Nonnull String inTypeMagick) throws IOException {
+    try (FileInputStream in = new FileInputStream(imageFile); FileOutputStreamWithMove out = new FileOutputStreamWithMove(targetFile)) {
+      createThumbnail(in, out, maxResolution.getWidth(), maxResolution.getHeight(), inTypeMagick);
     }
-  }
-
-  public void createThumbnail(@Nonnull InputStream in, @Nonnull OutputStream out, int maxWidth, int maxHeight) throws IOException {
-    createThumbnail(in, out, maxWidth, maxHeight, "jpeg");
   }
 
   protected void createThumbnail(@Nonnull InputStream in, @Nonnull OutputStream out, int maxWidth, int maxHeight, @Nonnull String inTypeMagick) throws IOException {

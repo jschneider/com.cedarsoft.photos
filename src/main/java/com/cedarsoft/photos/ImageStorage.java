@@ -40,7 +40,7 @@ public class ImageStorage {
    */
   @Nonnull
   @NonUiThread
-  File getDir(@Nonnull Hash hash) throws IOException {
+  public File getDir(@Nonnull Hash hash) throws IOException {
     return getDir(SplitHash.split(hash));
   }
 

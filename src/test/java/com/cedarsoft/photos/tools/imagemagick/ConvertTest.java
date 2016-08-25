@@ -4,7 +4,6 @@ import com.cedarsoft.image.Resolution;
 import org.junit.*;
 import org.junit.rules.*;
 
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
@@ -27,23 +26,13 @@ public class ConvertTest {
     URI uri = resource.toURI();
     imageFile = new File(uri);
     assertThat(imageFile).exists();
-
-    convert = createConvert();
-  }
-
-  @Nonnull
-  public static Convert createConvert() {
-    File bin = new File("/usr/bin/convert");
-    if (!bin.exists()) {
-      throw new AssertionError("Imagemagick not installed. Could not find convert");
-    }
-    return new Convert(bin);
+    convert = new Convert();
   }
 
   @Test
   public void basic() throws Exception {
     File thumbFile = tmp.newFile("thumb.jpg");
-    convert.createThumbnail(imageFile, thumbFile, new Resolution(800, 800));
+    convert.createThumbnail(imageFile, thumbFile, new Resolution(800, 800), "jpg");
     assertThat(thumbFile).exists();
   }
 }
