@@ -45,7 +45,7 @@ public class ImageFinder {
           continue;
         }
 
-        Hash hash = Hash.fromHex(Algorithm.SHA1, firstPartHashDir.getName() + "" + remainingPartHashDir.getName());
+        Hash hash = Hash.fromHex(ImageStorage.ALGORITHM, firstPartHashDir.getName() + "" + remainingPartHashDir.getName());
         consumer.found(storage, dataFile, hash);
       }
     }
