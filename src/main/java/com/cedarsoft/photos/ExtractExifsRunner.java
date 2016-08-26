@@ -22,18 +22,21 @@ public class ExtractExifsRunner {
 
     ImageFinder imageFinder = injector.getInstance(ImageFinder.class);
     imageFinder.find((storage, dataFile, hash) -> {
-      System.out.println("\t\tExtracting exif for " + dataFile);
       File dir = dataFile.getParentFile();
       File exifFile = new File(dir, "exif");
       if (exifFile.exists()) {
         return;
       }
 
-      dir.setWritable(true);
-      try (FileInputStream in = new FileInputStream(dataFile); FileOutputStreamWithMove out = new FileOutputStreamWithMove(exifFile)) {
-        exifExtractor.extractDetailed(in, out);
-      } finally {
-        dir.setWritable(false);
+      try {
+        dir.setWritable(true);
+        try (FileInputStream in = new FileInputStream(dataFile); FileOutputStreamWithMove out = new FileOutputStreamWithMove(exifFile)) {
+          exifExtractor.extractDetailed(in, out);
+        } finally {
+          dir.setWritable(false);
+        }
+      } catch (IOException ignore) {
+        System.out.println("Failed: " + dataFile.getAbsolutePath());
       }
     });
   }
