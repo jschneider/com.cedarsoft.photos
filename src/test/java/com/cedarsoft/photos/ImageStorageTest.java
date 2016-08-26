@@ -24,8 +24,8 @@ public class ImageStorageTest {
   @Before
   public void setUp() throws Exception {
     imageStorage = new ImageStorage(tmp.newFolder(), tmp.newFolder());
-    hash = HashCalculator.calculate(Algorithm.SHA1, "thecontent");
-    assertThat(hash.getValueAsHex()).isEqualTo("d958566e96bc10f33f4209fbc2ed05f9096ef9a0");
+    hash = HashCalculator.calculate(ImageStorage.ALGORITHM, "thecontent");
+    assertThat(hash.getValueAsHex()).isEqualTo("8ba871f31f3c8ad7d74591859e60f42fe89852ceb407fcd13f32433d37b751db");
   }
 
   @Test
@@ -56,8 +56,8 @@ public class ImageStorageTest {
   public void basic() throws Exception {
     File file = imageStorage.getDir(hash);
 
-    assertThat(file.getParentFile()).hasName("d9");
-    assertThat(file).hasName("58566e96bc10f33f4209fbc2ed05f9096ef9a0");
+    assertThat(file.getParentFile()).hasName("8b");
+    assertThat(file).hasName("a871f31f3c8ad7d74591859e60f42fe89852ceb407fcd13f32433d37b751db");
     assertThat(file.getParentFile()).exists();
   }
 
@@ -65,8 +65,8 @@ public class ImageStorageTest {
   public void dataFile() throws Exception {
     File file = imageStorage.getDataFile(hash);
 
-    assertThat(file.getParentFile().getParentFile()).hasName("d9");
-    assertThat(file.getParentFile()).hasName("58566e96bc10f33f4209fbc2ed05f9096ef9a0");
+    assertThat(file.getParentFile().getParentFile()).hasName("8b");
+    assertThat(file.getParentFile()).hasName("a871f31f3c8ad7d74591859e60f42fe89852ceb407fcd13f32433d37b751db");
     assertThat(file).hasName("data");
   }
 }
