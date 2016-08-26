@@ -96,11 +96,11 @@ public class ExifInfoTest {
 
   @Test
   public void testCamera() {
-    assertEquals(230101649, exifInfo.getCameraSerial());
+    assertEquals("0230101649", exifInfo.getCameraSerial());
     assertEquals("S0027533", exifInfo.getInternalSerial());
     assertEquals("Canon EOS 7D", exifInfo.getModel());
     assertEquals("Canon", exifInfo.getMake());
 
-    assertThat(exifInfo.getCameraInfo()).isEqualTo(new CameraInfo(230101649, "Canon", "Canon EOS 7D", "S0027533"));
+    assertThat(exifInfo.getCameraInfo()).isEqualTo(new CameraInfo("0230101649", "Canon", "Canon EOS 7D", "S0027533"));
   }
 }

@@ -96,11 +96,11 @@ public class ExifInfo2Test {
 
   @Test
   public void testCamera() {
-    assertEquals(73024007633L, exifInfo.getCameraSerial());
+    assertEquals("073024007633", exifInfo.getCameraSerial());
     assertEquals("", exifInfo.getInternalSerial());
     assertEquals("Canon EOS 5D Mark III", exifInfo.getModel());
     assertEquals("Canon", exifInfo.getMake());
 
-    assertThat(exifInfo.getCameraInfo()).isEqualTo(new CameraInfo(73024007633L, "Canon", "Canon EOS 5D Mark III", ""));
+    assertThat(exifInfo.getCameraInfo()).isEqualTo(new CameraInfo("073024007633", "Canon", "Canon EOS 5D Mark III", ""));
   }
 }
