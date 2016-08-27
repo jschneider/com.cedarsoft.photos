@@ -84,6 +84,12 @@
       </dependency>
 
       <dependency>
+        <groupId>org.im4java</groupId>
+        <artifactId>im4java</artifactId>
+        <version>1.4.0</version>
+      </dependency>
+
+      <dependency>
         <groupId>com.cedarsoft</groupId>
         <artifactId>annotations</artifactId>
         <version>3.0.1</version>
@@ -124,6 +130,11 @@
     <dependency>
       <groupId>com.cedarsoft.commons</groupId>
       <artifactId>exceptions</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.im4java</groupId>
+      <artifactId>im4java</artifactId>
     </dependency>
 
     <dependency>

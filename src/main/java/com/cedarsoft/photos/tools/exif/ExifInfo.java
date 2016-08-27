@@ -236,16 +236,18 @@ public class ExifInfo {
     return getCameraInfo().getModel().replace(" ", "_");
   }
 
-  public long getCameraSerial() throws NotFoundException {
+  @Nonnull
+  public String getCameraSerial() throws NotFoundException {
     Object value = findEntry("SerialNumber").getValueNonNull();
-    return Long.valueOf(String.valueOf(value));
+    return String.valueOf(value);
   }
 
-  public long getCameraSerialSafe() {
+  @Nonnull
+  public String getCameraSerialSafe() {
     try {
       return getCameraSerial();
     } catch (NotFoundException ignore) {
-      return -1;
+      return "";
     }
   }
 

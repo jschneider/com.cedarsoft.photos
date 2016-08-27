@@ -36,9 +36,10 @@ import javax.annotation.Nonnull;
  */
 public class CameraInfo {
   @Nonnull
-  public static final CameraInfo UNKNOWN_INFO = new CameraInfo(0, "UNKNOWN", "UNKNOWN", "UNKWNON");
+  public static final CameraInfo UNKNOWN_INFO = new CameraInfo("UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKWNON");
 
-  private final long serial;
+  @Nonnull
+  private final String serial;
   @Nonnull
 
   private final String model;
@@ -57,7 +58,7 @@ public class CameraInfo {
    * @param model          the model
    * @param internalSerial the internal serial
    */
-  public CameraInfo(long serial, @Nonnull String make, @Nonnull String model, @Nonnull String internalSerial) {
+  public CameraInfo(@Nonnull String serial, @Nonnull String make, @Nonnull String model, @Nonnull String internalSerial) {
     this.serial = serial;
     this.make = make;
     this.model = model;
@@ -70,7 +71,7 @@ public class CameraInfo {
     return internalSerial;
   }
 
-  public long getSerial() {
+  public String getSerial() {
     return serial;
   }
 
@@ -96,7 +97,7 @@ public class CameraInfo {
 
     CameraInfo that = (CameraInfo) obj;
 
-    if (serial != that.serial) {
+    if (!serial.equals(that.serial)) {
       return false;
     }
     if (!model.equals(that.model)) {
@@ -111,7 +112,7 @@ public class CameraInfo {
 
   @Override
   public int hashCode() {
-    int result = (int) (serial ^ (serial >>> 32));
+    int result = serial.hashCode();
     result = 31 * result + model.hashCode();
     result = 31 * result + make.hashCode();
     result = 31 * result + internalSerial.hashCode();

@@ -1,6 +1,7 @@
 package com.cedarsoft.photos;
 
 import com.cedarsoft.annotations.NonUiThread;
+import com.cedarsoft.crypt.Algorithm;
 import com.cedarsoft.crypt.Hash;
 import org.apache.commons.io.FileUtils;
 
@@ -12,6 +13,9 @@ import java.io.IOException;
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 public class ImageStorage {
+  @Nonnull
+  public static final Algorithm ALGORITHM = Algorithm.SHA256;
+
   @Nonnull
   public static final String DATA_FILE_NAME = "data";
   @Nonnull
@@ -40,7 +44,7 @@ public class ImageStorage {
    */
   @Nonnull
   @NonUiThread
-  File getDir(@Nonnull Hash hash) throws IOException {
+  public File getDir(@Nonnull Hash hash) throws IOException {
     return getDir(SplitHash.split(hash));
   }
 
@@ -97,6 +101,7 @@ public class ImageStorage {
 
     //Now move the original directory
     File dirToDelete = getDir(splitHash);
+    dirToDelete.setWritable(true);
     FileUtils.moveDirectory(dirToDelete, targetDir);
   }
 
