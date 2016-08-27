@@ -22,12 +22,11 @@ public class ImportRunner {
     List<File> failedLinks = new ArrayList<>();
 
     Importer importer = injector.getInstance(Importer.class);
-    importer.importDirectory(new File("/media/mule/data/media/photos/import/todo"), new Importer.Listener() {
+    importer.importDirectory(new File("/media/mule/data/media/photos/import/done"), new Importer.Listener() {
       @Override
       public void skipped(@Nonnull File fileToImport, @Nonnull File targetFile) {
-        System.out.println("Skipped " + fileToImport);
         try {
-          System.out.println("\t" + linkByDateCreator.createLink(targetFile).getAbsolutePath());
+          linkByDateCreator.createLink(targetFile).getAbsolutePath();
         } catch (Exception e) {
           e.printStackTrace();
           failedLinks.add(targetFile);
