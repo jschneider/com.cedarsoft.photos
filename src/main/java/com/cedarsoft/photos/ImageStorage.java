@@ -99,6 +99,11 @@ public class ImageStorage {
     SplitHash splitHash = SplitHash.split(hash);
     File targetDir = getDeletedDir(splitHash);
 
+    //Already deleted
+    if (targetDir.exists()) {
+      FileUtils.deleteDirectory(targetDir);
+    }
+
     //Now move the original directory
     File dirToDelete = getDir(splitHash);
     dirToDelete.setWritable(true);
