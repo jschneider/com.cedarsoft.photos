@@ -25,8 +25,6 @@ public class CreatePreviewsRunner {
 
     ImageFinder imageFinder = injector.getInstance(ImageFinder.class);
     imageFinder.find((storage, dataFile, hash) -> {
-      System.out.println("\t\tCreating thumbs for " + dataFile);
-
       try {
         ExifInfo exifInfo = exifHelper.getExifInfo(hash);
         String extension = exifInfo.getFileTypeExtension();
@@ -42,7 +40,6 @@ public class CreatePreviewsRunner {
         } finally {
           dir.setWritable(false);
         }
-
       } catch (ExifHelper.NoExifInfoFoundException ignore) {
         System.out.println("--> No exif available for <" + dataFile.getAbsolutePath() + ">");
       }
