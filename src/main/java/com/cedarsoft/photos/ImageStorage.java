@@ -52,7 +52,7 @@ public class ImageStorage {
   @Nonnull
   private File getDir(@Nonnull SplitHash splitHash) {
     File firstPartDir = getFirstPartDir(splitHash.getFirstPart());
-    return new File(firstPartDir, splitHash.getLeftover());
+    return new File(firstPartDir, splitHash.getHashAsHex());
   }
 
   /**
@@ -85,7 +85,7 @@ public class ImageStorage {
   @Nonnull
   private File getDeletedDir(@Nonnull SplitHash splitHash) {
     File firstPartDir = getDeletedFirstPartDir(splitHash.getFirstPart());
-    return new File(firstPartDir, splitHash.getLeftover());
+    return new File(firstPartDir, splitHash.getHashAsHex());
   }
 
   @Nonnull

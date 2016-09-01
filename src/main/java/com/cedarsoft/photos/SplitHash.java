@@ -80,6 +80,9 @@ public class SplitHash {
     return Hash.fromHex(algorithm, getHashAsHex());
   }
 
+  /**
+   * Returns the complete hash (first part + leftover)
+   */
   @Nonnull
   public String getHashAsHex() {
     return firstPart + leftover;
