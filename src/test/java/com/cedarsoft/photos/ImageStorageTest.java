@@ -58,7 +58,6 @@ public class ImageStorageTest {
 
     assertThat(file.getParentFile()).hasName("8b");
     assertThat(file).hasName("a871f31f3c8ad7d74591859e60f42fe89852ceb407fcd13f32433d37b751db");
-    assertThat(file.getParentFile()).exists();
   }
 
   @Test
