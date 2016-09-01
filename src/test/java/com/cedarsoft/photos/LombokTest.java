@@ -4,6 +4,7 @@ import lombok.Cleanup;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import lombok.ToString;
 import org.junit.*;
 
 import javax.annotation.Nonnull;
@@ -22,6 +23,16 @@ public class LombokTest {
     assertThat(address.getName()).isEqualTo("max mustermann");
   }
 
+  @Test
+  public void equals() throws Exception {
+    assertThat(new Address("asdf")).isEqualTo(new Address("asdf"));
+  }
+
+  @Test
+  public void testToString() throws Exception {
+    assertThat(new Address("asdf").toString()).isEqualTo("LombokTest.Address(name=asdf)");
+  }
+
   @Test(expected = IllegalAccessException.class)
   public void sneak() throws Exception {
     sneaky();
@@ -35,6 +46,7 @@ public class LombokTest {
   /**
    * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
    */
+  @ToString
   @EqualsAndHashCode
   public static class Address {
     @Getter
