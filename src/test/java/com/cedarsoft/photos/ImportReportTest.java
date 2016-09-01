@@ -7,7 +7,6 @@ import lombok.extern.java.Log;
 import org.junit.*;
 
 import java.io.File;
-import java.util.logging.Level;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,6 +37,7 @@ public class ImportReportTest {
     assertThat(importReport.alreadyExisting()).hasSize(1);
     assertThat(importReport.importedHashes()).hasSize(1);
     assertThat(importReport.createdLinks()).hasSize(1);
+    assertThat(importReport.createdLinks()).isInstanceOf(ImmutableList.class);
 
     assertThat(importReport.toString()).isEqualTo("ImportReport(importedHashes=[[SHA256: 61736466]], alreadyExisting=[[SHA256: 32]], createdLinks=[asdf])");
   }

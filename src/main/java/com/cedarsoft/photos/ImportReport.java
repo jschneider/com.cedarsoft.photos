@@ -11,6 +11,7 @@ import lombok.extern.java.Log;
 
 import javax.annotation.Nonnull;
 import java.io.File;
+import java.util.List;
 
 /**
  * Contains the report for imported files
@@ -25,15 +26,15 @@ public class ImportReport {
   @Singular("imported")
   @Getter
   @Nonnull
-  private final ImmutableList<? extends Hash> importedHashes;
+  private final List<? extends Hash> importedHashes;
   @Singular("existing")
   @Getter
   @Nonnull
-  private final ImmutableList<? extends Hash> alreadyExisting;
+  private final List<? extends Hash> alreadyExisting;
   @Singular
   @Getter
   @Nonnull
-  private final ImmutableList<? extends File> createdLinks;
+  private final List<? extends File> createdLinks;
 
   public void aMethod() {
     LOG.fine("asdf " + this);
