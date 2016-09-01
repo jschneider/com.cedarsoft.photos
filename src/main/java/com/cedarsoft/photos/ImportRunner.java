@@ -32,7 +32,7 @@ public class ImportRunner {
         importReportBuilder.existing(hash);
 
         try {
-          File linkPath = linkByDateCreator.createLink(targetFile);
+          File linkPath = linkByDateCreator.createLink(targetFile, hash);
           importReportBuilder.createdLink(linkPath);
         } catch (Exception e) {
           e.printStackTrace();
@@ -46,7 +46,7 @@ public class ImportRunner {
 
         System.out.println("Imported " + fileToImport + " --> " + targetFile.getParentFile().getParentFile().getName() + "/" + targetFile.getParentFile().getName());
         try {
-          File link = linkByDateCreator.createLink(targetFile);
+          File link = linkByDateCreator.createLink(targetFile, hash);
           importReportBuilder.createdLink(link);
           System.out.println("\t" + link.getAbsolutePath());
         } catch (Exception e) {

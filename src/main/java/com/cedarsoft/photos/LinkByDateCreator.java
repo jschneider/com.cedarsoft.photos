@@ -1,5 +1,6 @@
 package com.cedarsoft.photos;
 
+import com.cedarsoft.crypt.Hash;
 import com.cedarsoft.exceptions.NotFoundException;
 import com.cedarsoft.io.LinkUtils;
 import com.cedarsoft.photos.tools.exif.ExifExtractor;
@@ -37,18 +38,21 @@ public class LinkByDateCreator {
    * Creates a link for the given source file
    */
   @Nonnull
-  public File createLink(@Nonnull File sourceFile) throws IOException, NotFoundException {
+  public File createLink(@Nonnull File sourceFile, @Nonnull Hash hash) throws IOException, NotFoundException {
     try (FileInputStream in = new FileInputStream(sourceFile)) {
       ExifInfo exifInfo = exifExtractor.extractInfo(in);
 
       String extension = exifInfo.getFileTypeExtension();
 
+      String shortHashString = hash.getValueAsHex().substring(0, 8);
+
       @Nullable ZonedDateTime captureTime = exifInfo.getCaptureTimeNullable(ZoneOffset.UTC);
+      String fileNameSuffix = exifInfo.getCameraId() + "_" + exifInfo.getFileNumberSafe() + "_#" + shortHashString + "." + extension;
       if (captureTime == null) {
-        return createUnknownDateLink(sourceFile, exifInfo.getCameraId() + "_" + exifInfo.getFileNumberSafe() + "." + extension, extension);
+        return createUnknownDateLink(sourceFile, fileNameSuffix, extension);
       }
 
-      String fileName = captureTime.format(DateTimeFormatter.ISO_DATE_TIME) + "_" + exifInfo.getCameraId() + "_" + exifInfo.getFileNumberSafe() + "." + extension;
+      String fileName = captureTime.format(DateTimeFormatter.ISO_DATE_TIME) + "_" + fileNameSuffix;
 
       //Store in the month
       createLink(sourceFile, new File(createMonthDir(captureTime), "all"), fileName, extension);

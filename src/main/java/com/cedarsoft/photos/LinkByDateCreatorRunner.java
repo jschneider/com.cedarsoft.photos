@@ -22,7 +22,7 @@ public class LinkByDateCreatorRunner {
     imageFinder.find((storage, dataFile, hash) -> {
       try {
         System.out.println("\t\tCreating links for " + dataFile);
-        File link = linkByDateCreator.createLink(dataFile);
+        File link = linkByDateCreator.createLink(dataFile, hash);
         System.out.println("--> " + link.getAbsolutePath());
       } catch (NotFoundException e) {
         e.printStackTrace();
