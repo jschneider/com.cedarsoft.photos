@@ -1,5 +1,6 @@
-package com.cedarsoft.photos;
+package com.cedarsoft.photos.maintenance;
 
+import com.cedarsoft.photos.ImageStorage;
 import com.cedarsoft.photos.di.Modules;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
