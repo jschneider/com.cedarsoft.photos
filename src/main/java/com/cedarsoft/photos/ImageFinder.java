@@ -1,7 +1,6 @@
 package com.cedarsoft.photos;
 
 import com.cedarsoft.annotations.NonUiThread;
-import com.cedarsoft.crypt.Algorithm;
 import com.cedarsoft.crypt.Hash;
 import lombok.extern.java.Log;
 
@@ -10,7 +9,6 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
 
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
@@ -36,16 +34,16 @@ public class ImageFinder {
         continue;
       }
 
-      File[] remainingPartHashDirs = firstPartHashDir.listFiles();
-      assert remainingPartHashDirs != null;
-      for (File remainingPartHashDir : remainingPartHashDirs) {
-        File dataFile = new File(remainingPartHashDir, ImageStorage.DATA_FILE_NAME);
+      File[] dataDirs = firstPartHashDir.listFiles();
+      assert dataDirs != null;
+      for (File dataDir : dataDirs) {
+        File dataFile = new File(dataDir, ImageStorage.DATA_FILE_NAME);
         if (!dataFile.exists()) {
           LOG.warning("Missing data file: <" + dataFile.getAbsolutePath() + ">");
           continue;
         }
 
-        Hash hash = Hash.fromHex(ImageStorage.ALGORITHM, firstPartHashDir.getName() + remainingPartHashDir.getName());
+        Hash hash = Hash.fromHex(ImageStorage.ALGORITHM, dataDir.getName());
         consumer.found(storage, dataFile, hash);
       }
     }
