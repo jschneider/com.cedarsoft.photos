@@ -1,5 +1,6 @@
 package com.cedarsoft.photos;
 
+import com.cedarsoft.crypt.Hash;
 import com.cedarsoft.photos.di.Modules;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -22,11 +23,17 @@ public class ImportRunner {
     List<File> failedLinks = new ArrayList<>();
 
     Importer importer = injector.getInstance(Importer.class);
-    importer.importDirectory(new File("/media/mule/data/media/photos/import/done"), new Importer.Listener() {
+
+    ImportReport.ImportReportBuilder importReportBuilder = ImportReport.builder();
+
+    importer.importDirectory(new File("/media/mule/data/media/photos/import/todo/found-somewhere"), new Importer.Listener() {
       @Override
-      public void skipped(@Nonnull File fileToImport, @Nonnull File targetFile) {
+      public void skipped(@Nonnull Hash hash, @Nonnull File fileToImport, @Nonnull File targetFile) {
+        importReportBuilder.existing(hash);
+
         try {
-          linkByDateCreator.createLink(targetFile).getAbsolutePath();
+          File linkPath = linkByDateCreator.createLink(targetFile);
+          importReportBuilder.createdLink(linkPath);
         } catch (Exception e) {
           e.printStackTrace();
           failedLinks.add(targetFile);
@@ -34,10 +41,14 @@ public class ImportRunner {
       }
 
       @Override
-      public void imported(@Nonnull File fileToImport, @Nonnull File targetFile) {
+      public void imported(@Nonnull Hash hash, @Nonnull File fileToImport, @Nonnull File targetFile) {
+        importReportBuilder.imported(hash);
+
         System.out.println("Imported " + fileToImport + " --> " + targetFile.getParentFile().getParentFile().getName() + "/" + targetFile.getParentFile().getName());
         try {
-          System.out.println("\t" + linkByDateCreator.createLink(targetFile).getAbsolutePath());
+          File link = linkByDateCreator.createLink(targetFile);
+          importReportBuilder.createdLink(link);
+          System.out.println("\t" + link.getAbsolutePath());
         } catch (Exception e) {
           e.printStackTrace();
           failedLinks.add(targetFile);
@@ -50,6 +61,28 @@ public class ImportRunner {
 
     for (File failedLink : failedLinks) {
       System.out.println("\t" + failedLink.getAbsolutePath());
+    }
+
+
+    ImportReport importReport = importReportBuilder.build();
+
+    System.out.println("################################");
+    System.out.println("################################");
+    System.out.println("##########  RESULT  ############");
+    System.out.println("################################");
+    System.out.println("################################");
+    System.out.println("Imported:       " + importReport.importedHashes().size());
+    System.out.println("Skipped:        " + importReport.alreadyExisting().size());
+    System.out.println();
+    System.out.println(" Imported Hashes: ");
+    for (Hash hash : importReport.importedHashes()) {
+      System.out.println("\t\t" + hash.getValueAsHex());
+    }
+    System.out.println();
+    System.out.println();
+    System.out.println("Created links: ");
+    for (File link : importReport.createdLinks()) {
+      System.out.println("\t" + link.getAbsolutePath());
     }
   }
 }
