@@ -33,8 +33,6 @@ public class ExtractExifsRunner {
         dir.setWritable(true);
         try (FileInputStream in = new FileInputStream(dataFile); FileOutputStream out = new FileOutputStream(tmpOut)) {
           exifExtractor.extractDetailed(in, out);
-        } finally {
-          dir.setWritable(false);
         }
 
         //Rename after success
@@ -43,6 +41,7 @@ public class ExtractExifsRunner {
         System.out.println("Failed: " + dataFile.getAbsolutePath());
       } finally {
         tmpOut.delete();
+        dir.setWritable(false);
       }
     });
   }
