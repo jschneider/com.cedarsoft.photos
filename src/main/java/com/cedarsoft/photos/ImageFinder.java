@@ -3,6 +3,7 @@ package com.cedarsoft.photos;
 import com.cedarsoft.annotations.NonUiThread;
 import com.cedarsoft.crypt.Algorithm;
 import com.cedarsoft.crypt.Hash;
+import lombok.extern.java.Log;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -14,9 +15,8 @@ import java.util.logging.Logger;
 /**
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
+@Log
 public class ImageFinder {
-  private static final Logger LOG = Logger.getLogger(ImageFinder.class.getName());
-
   @Nonnull
   private final ImageStorage storage;
 
