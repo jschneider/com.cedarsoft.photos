@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Singular;
 import lombok.Value;
 import lombok.experimental.Accessors;
+import lombok.extern.java.Log;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -19,6 +20,7 @@ import java.io.File;
 @Builder
 @Value
 @Accessors(fluent = true)
+@Log
 public class ImportReport {
   @Singular("imported")
   @Getter
@@ -32,4 +34,8 @@ public class ImportReport {
   @Getter
   @Nonnull
   private final ImmutableList<? extends File> createdLinks;
+
+  public void aMethod() {
+    LOG.fine("asdf " + this);
+  }
 }

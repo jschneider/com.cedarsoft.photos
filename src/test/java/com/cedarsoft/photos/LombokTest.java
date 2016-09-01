@@ -20,7 +20,7 @@ public class LombokTest {
   @Test
   public void run() throws Exception {
     Address address = new Address("max mustermann");
-    assertThat(address.getName()).isEqualTo("max mustermann");
+    assertThat(address.name()).isEqualTo("max mustermann");
   }
 
   @Test
