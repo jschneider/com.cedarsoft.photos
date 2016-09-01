@@ -57,7 +57,7 @@ public class ImageStorageTest {
     File file = imageStorage.getDir(hash);
 
     assertThat(file.getParentFile()).hasName("8b");
-    assertThat(file).hasName("a871f31f3c8ad7d74591859e60f42fe89852ceb407fcd13f32433d37b751db");
+    assertThat(file).hasName("8ba871f31f3c8ad7d74591859e60f42fe89852ceb407fcd13f32433d37b751db");
   }
 
   @Test
@@ -65,7 +65,7 @@ public class ImageStorageTest {
     File file = imageStorage.getDataFile(hash);
 
     assertThat(file.getParentFile().getParentFile()).hasName("8b");
-    assertThat(file.getParentFile()).hasName("a871f31f3c8ad7d74591859e60f42fe89852ceb407fcd13f32433d37b751db");
+    assertThat(file.getParentFile()).hasName("8ba871f31f3c8ad7d74591859e60f42fe89852ceb407fcd13f32433d37b751db");
     assertThat(file).hasName("data");
   }
 }
