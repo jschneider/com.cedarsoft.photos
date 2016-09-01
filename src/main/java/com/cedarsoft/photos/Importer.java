@@ -1,7 +1,6 @@
 package com.cedarsoft.photos;
 
 import com.cedarsoft.annotations.NonUiThread;
-import com.cedarsoft.crypt.Algorithm;
 import com.cedarsoft.crypt.Hash;
 import com.cedarsoft.crypt.HashCalculator;
 import com.cedarsoft.io.LinkUtils;
@@ -24,9 +23,6 @@ import java.util.Set;
 public class Importer {
   @Nonnull
   private static final Set<String> SUPPORTED_FILE_SUFFICIES = ImmutableSet.of("jpeg", "jpg", "cr2");
-
-  public static final Algorithm ALGORITHM = Algorithm.SHA256;
-
   @Nonnull
   private final ImageStorage imageStorage;
 
@@ -40,7 +36,7 @@ public class Importer {
    */
   @NonUiThread
   public void importFile(@Nonnull File fileToImport, @Nonnull Listener listener) throws IOException {
-    Hash hash = HashCalculator.calculate(ALGORITHM, fileToImport);
+    Hash hash = HashCalculator.calculate(ImageStorage.ALGORITHM, fileToImport);
 
     File targetFile = imageStorage.getDataFile(hash);
     if (targetFile.exists()) {
