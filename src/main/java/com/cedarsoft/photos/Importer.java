@@ -44,7 +44,7 @@ public class Importer {
 
     File targetFile = imageStorage.getDataFile(hash);
     if (targetFile.exists()) {
-      listener.skipped(fileToImport, targetFile);
+      listener.skipped(hash, fileToImport, targetFile);
       return;
     }
 
@@ -67,7 +67,7 @@ public class Importer {
       dir.setWritable(false, false);
     }
 
-    listener.imported(fileToImport, targetFile);
+    listener.imported(hash, fileToImport, targetFile);
   }
 
   /**
@@ -120,11 +120,11 @@ public class Importer {
     /**
      * Is called if the file is skipped
      */
-    void skipped(@Nonnull File fileToImport, @Nonnull File targetFile);
+    void skipped(@Nonnull Hash hash, @Nonnull File fileToImport, @Nonnull File targetFile);
 
     /**
      * Is called if the file has been imported
      */
-    void imported(@Nonnull File fileToImport, @Nonnull File targetFile);
+    void imported(@Nonnull Hash hash, @Nonnull File fileToImport, @Nonnull File targetFile);
   }
 }
