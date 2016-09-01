@@ -23,6 +23,15 @@ public class ImageFinder {
     this.storage = storage;
   }
 
+  /**
+   * Method that only "finds" the image with the given hash
+   */
+  @NonUiThread
+  public void find(@Nonnull Hash hash, @Nonnull Consumer consumer) throws IOException {
+    File dataFile = storage.getDataFile(hash);
+    consumer.found(storage, dataFile, hash);
+  }
+
   @NonUiThread
   public void find(@Nonnull Consumer consumer) throws IOException {
     @Nullable File[] firstPartHashDirs = storage.getBaseDir().listFiles();
