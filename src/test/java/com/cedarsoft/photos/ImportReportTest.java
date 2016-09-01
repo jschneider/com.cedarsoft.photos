@@ -31,5 +31,6 @@ public class ImportReportTest {
     assertThat(importReport.importedHashes()).hasSize(1);
     assertThat(importReport.createdLinks()).hasSize(1);
 
+    assertThat(importReport.toString()).isEqualTo("ImportReport(importedHashes=[[SHA256: 61736466]], alreadyExisting=[[SHA256: 32]], createdLinks=[asdf])");
   }
 }
